@@ -1,1241 +1,2045 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 3 — Qui a déréglé la Terre ?</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission 3 — Qui a déréglé la Terre ?</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top, #243b55 0%, #141e30 55%, #090d14 100%);
-      color: #f5f7fa;
-      min-height: 100vh;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    .container {
-      width: min(1100px, 94%);
-      margin: auto;
-      padding: 25px 0 50px;
-    }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at top, #243b55 0%, #141e30 55%, #080c12 100%);
+  min-height: 100vh;
+}
 
-    header {
-      text-align: center;
-      margin-bottom: 25px;
-    }
+.container {
+  width: min(1100px, 94%);
+  margin: auto;
+  padding: 25px 0 60px;
+}
 
-    .badge {
-      display: inline-block;
-      background: #ffb703;
-      color: #111;
-      padding: 7px 15px;
-      border-radius: 30px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-    }
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    h1 {
-      font-size: clamp(2rem, 5vw, 4rem);
-      margin: 5px 0;
-      color: #90e0ef;
-      text-shadow: 0 0 15px rgba(144, 224, 239, 0.5);
-    }
+.badge {
+  display: inline-block;
+  background: #ffb703;
+  color: #111;
+  padding: 7px 16px;
+  border-radius: 30px;
+  font-weight: bold;
+}
 
-    .subtitle {
-      color: #cbd5e1;
-      font-size: 1.1rem;
-    }
+h1 {
+  color: #90e0ef;
+  font-size: clamp(2.1rem, 6vw, 4rem);
+  margin: 10px 0 5px;
+  text-shadow: 0 0 18px rgba(144,224,239,.4);
+}
 
-    .status {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
-    }
+.subtitle {
+  color: #cbd5e1;
+}
 
-    .status-card {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 14px;
-      padding: 15px;
-      text-align: center;
-      backdrop-filter: blur(8px);
-    }
+/* =========================
+   TABLEAU DE BORD
+========================= */
 
-    .status-card strong {
-      display: block;
-      font-size: 1.6rem;
-      color: #90e0ef;
-    }
+.dashboard {
+  background: rgba(5,12,20,.88);
+  border: 1px solid rgba(144,224,239,.25);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
 
-    .progress-container {
-      height: 12px;
-      background: #263241;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 8px 0;
-    }
+.dashboard-title {
+  color: #90e0ef;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
 
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00b4d8, #90e0ef);
-      transition: width 0.5s ease;
-    }
+.step-map {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
-    .mission {
-      background: rgba(10, 18, 30, 0.92);
-      border: 1px solid rgba(144, 224, 239, 0.25);
-      border-radius: 22px;
-      padding: 30px;
-      margin-bottom: 25px;
-      box-shadow: 0 15px 45px rgba(0,0,0,0.35);
-    }
+.step-button {
+  flex: 1 1 100px;
+  border: 2px solid #334155;
+  background: #172231;
+  color: #cbd5e1;
+  padding: 10px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .mission.hidden {
-      display: none;
-    }
+.step-button:hover {
+  border-color: #90e0ef;
+}
 
-    .mission-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 0;
-      color: #90e0ef;
-      font-size: 1.8rem;
-    }
+.step-button.active {
+  background: #0077b6;
+  color: white;
+  border-color: #90e0ef;
+}
 
-    .mission-number {
-      width: 45px;
-      height: 45px;
-      display: grid;
-      place-items: center;
-      background: #0077b6;
-      border-radius: 50%;
-      color: white;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
+.step-button.completed {
+  background: rgba(56,176,0,.18);
+  border-color: #38b000;
+  color: #b7f7a4;
+}
 
-    .story {
-      background: rgba(255, 183, 3, 0.1);
-      border-left: 5px solid #ffb703;
-      padding: 15px 18px;
-      border-radius: 8px;
-      margin: 20px 0;
-      line-height: 1.6;
-    }
+.step-button.locked {
+  opacity: .45;
+}
 
-    .question {
-      color: #fff;
-      font-size: 1.2rem;
-      margin: 25px 0 15px;
-    }
+.progress-container {
+  height: 12px;
+  background: #263241;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 15px;
+}
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-      margin-top: 20px;
-    }
+.progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg,#00b4d8,#90e0ef);
+  transition: width .4s;
+}
 
-    .choice {
-      border: 2px solid #334155;
-      background: #172231;
-      color: #f8fafc;
-      border-radius: 15px;
-      padding: 20px 14px;
-      cursor: pointer;
-      transition: 0.2s ease;
-      min-height: 90px;
-      font-size: 1rem;
-      font-weight: bold;
-    }
+.code-panel {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 14px;
+  background: rgba(255,183,3,.08);
+  border: 1px solid rgba(255,183,3,.35);
+}
 
-    .choice:hover {
-      transform: translateY(-3px);
-      border-color: #90e0ef;
-      background: #203246;
-    }
+.code-panel strong {
+  color: #ffb703;
+}
 
-    .choice.selected {
-      border-color: #00b4d8;
-      background: rgba(0,180,216,0.2);
-      box-shadow: 0 0 15px rgba(0,180,216,0.2);
-    }
+.code-numbers {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
 
-    .choice.correct {
-      border-color: #38b000;
-      background: rgba(56,176,0,0.18);
-    }
+.code-number {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #050a10;
+  border: 2px solid #475569;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #64748b;
+}
 
-    .choice.wrong {
-      border-color: #ef233c;
-      background: rgba(239,35,60,0.15);
-    }
+.code-number.found {
+  color: #90e0ef;
+  border-color: #00b4d8;
+  box-shadow: 0 0 12px rgba(0,180,216,.25);
+}
 
-    .sequence {
-      display: grid;
-      gap: 12px;
-      margin-top: 20px;
-    }
+/* =========================
+   MISSIONS
+========================= */
 
-    .sequence-item {
-      background: #172231;
-      border: 2px solid #334155;
-      padding: 18px;
-      border-radius: 12px;
-      cursor: grab;
-      user-select: none;
-      font-size: 1rem;
-    }
+.mission {
+  background: rgba(10,18,30,.94);
+  border: 1px solid rgba(144,224,239,.25);
+  border-radius: 22px;
+  padding: 30px;
+  box-shadow: 0 15px 45px rgba(0,0,0,.35);
+}
 
-    .sequence-item:hover {
-      border-color: #90e0ef;
-    }
+.hidden {
+  display: none;
+}
 
-    .sequence-item.dragging {
-      opacity: 0.4;
-    }
+.mission-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #90e0ef;
+  margin-top: 0;
+}
 
-    .sequence-item span {
-      display: inline-grid;
-      place-items: center;
-      width: 32px;
-      height: 32px;
-      background: #0077b6;
-      border-radius: 50%;
-      margin-right: 10px;
-      font-weight: bold;
-    }
+.mission-number {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: #0077b6;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: white;
+}
 
-    button.action {
-      border: none;
-      background: linear-gradient(135deg, #0077b6, #00b4d8);
-      color: white;
-      font-size: 1rem;
-      font-weight: bold;
-      padding: 14px 24px;
-      border-radius: 12px;
-      cursor: pointer;
-      margin-top: 22px;
-      transition: 0.2s;
-    }
+.story {
+  background: rgba(255,183,3,.08);
+  border-left: 5px solid #ffb703;
+  padding: 16px;
+  border-radius: 8px;
+  line-height: 1.6;
+  margin: 20px 0;
+}
 
-    button.action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,180,216,0.25);
-    }
+.question {
+  font-size: 1.2rem;
+  margin: 22px 0 15px;
+}
 
-    button.action:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+  gap: 13px;
+}
 
-    .feedback {
-      margin-top: 18px;
-      padding: 15px;
-      border-radius: 10px;
-      display: none;
-      line-height: 1.5;
-    }
+.choice {
+  border: 2px solid #334155;
+  background: #172231;
+  color: white;
+  border-radius: 14px;
+  padding: 18px 13px;
+  min-height: 80px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: .2s;
+}
 
-    .feedback.success {
-      display: block;
-      background: rgba(56,176,0,0.15);
-      border: 1px solid #38b000;
-      color: #b7f7a4;
-    }
+.choice:hover {
+  transform: translateY(-2px);
+  border-color: #90e0ef;
+}
 
-    .feedback.error {
-      display: block;
-      background: rgba(239,35,60,0.12);
-      border: 1px solid #ef233c;
-      color: #ffb3bd;
-    }
+.choice.selected {
+  background: rgba(0,180,216,.2);
+  border-color: #00b4d8;
+}
 
-    .keypad {
-      max-width: 300px;
-      margin: 25px auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
+.choice.correct {
+  background: rgba(56,176,0,.18);
+  border-color: #38b000;
+}
 
-    .key {
-      background: #172231;
-      border: 2px solid #334155;
-      color: white;
-      border-radius: 12px;
-      padding: 18px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.choice.wrong {
+  background: rgba(239,35,60,.15);
+  border-color: #ef233c;
+}
 
-    .key:hover {
-      background: #203246;
-      border-color: #90e0ef;
-    }
+.action {
+  border: none;
+  background: linear-gradient(135deg,#0077b6,#00b4d8);
+  color: white;
+  font-weight: bold;
+  padding: 14px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 22px;
+}
 
-    .display {
-      max-width: 300px;
-      margin: auto;
-      height: 60px;
-      background: #050a10;
-      border: 2px solid #00b4d8;
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      letter-spacing: 12px;
-      color: #90e0ef;
-      box-shadow: inset 0 0 20px rgba(0,180,216,0.12);
-    }
+.action:hover {
+  box-shadow: 0 8px 20px rgba(0,180,216,.25);
+}
 
-    .victory {
-      text-align: center;
-      background: linear-gradient(135deg, rgba(0,119,182,0.3), rgba(56,176,0,0.2));
-      border: 2px solid #90e0ef;
-    }
+.feedback {
+  display: none;
+  padding: 15px;
+  margin-top: 18px;
+  border-radius: 10px;
+  line-height: 1.5;
+}
 
-    .victory h2 {
-      font-size: 2.5rem;
-      color: #90e0ef;
-    }
+.feedback.success {
+  display: block;
+  background: rgba(56,176,0,.14);
+  border: 1px solid #38b000;
+  color: #b7f7a4;
+}
 
-    .big-check {
-      font-size: 5rem;
-      margin: 10px;
-    }
+.feedback.error {
+  display: block;
+  background: rgba(239,35,60,.12);
+  border: 1px solid #ef233c;
+  color: #ffb3bd;
+}
 
-    .explanation {
-      text-align: left;
-      max-width: 750px;
-      margin: 25px auto;
-      background: rgba(0,0,0,0.2);
-      padding: 20px;
-      border-radius: 15px;
-      line-height: 1.7;
-    }
+/* =========================
+   CHAINES
+========================= */
 
-    .restart {
-      background: #ffb703 !important;
-      color: #111 !important;
-    }
+.sequence {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
 
-    .locked {
-      opacity: 0.45;
-      pointer-events: none;
-    }
+.sequence-item {
+  background: #172231;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 17px;
+  cursor: grab;
+}
 
-    .hint {
-      color: #94a3b8;
-      font-size: 0.9rem;
-      margin-top: 10px;
-    }
+.sequence-item:hover {
+  border-color: #90e0ef;
+}
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 10px rgba(0,180,216,0.1); }
-      50% { box-shadow: 0 0 30px rgba(0,180,216,0.35); }
-    }
+.sequence-item span {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: #0077b6;
+  border-radius: 50%;
+  margin-right: 8px;
+  font-weight: bold;
+}
 
-    .active {
-      animation: pulse 2s infinite;
-    }
+/* =========================
+   MINI CARTE
+========================= */
 
-    @media (max-width: 650px) {
-      .status {
-        grid-template-columns: 1fr;
-      }
+.climate-diagram {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  margin: 20px 0;
+  border-radius: 14px;
+  overflow: hidden;
+}
 
-      .mission {
-        padding: 20px;
-      }
+.zone {
+  padding: 25px 10px;
+  text-align: center;
+  font-weight: bold;
+}
 
-      .cards {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+.polar {
+  background: #90e0ef;
+  color: #073047;
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
-      }
-    }
-  </style>
+.temperate {
+  background: #80ed99;
+  color: #073b18;
+}
+
+.tropical {
+  background: #ffb703;
+  color: #4a3100;
+}
+
+/* =========================
+   VRAI / FAUX
+========================= */
+
+.vf {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.vf-row {
+  background: #172231;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.vf-row p {
+  margin-top: 0;
+  font-weight: bold;
+}
+
+.vf-row button {
+  padding: 9px 15px;
+  margin-right: 8px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #263241;
+  color: white;
+  cursor: pointer;
+}
+
+.vf-row button.selected {
+  background: #0077b6;
+  border-color: #90e0ef;
+}
+
+/* =========================
+   CODE FINAL
+========================= */
+
+.final-code-display {
+  max-width: 320px;
+  margin: 25px auto;
+  height: 65px;
+  background: #050a10;
+  border: 2px solid #00b4d8;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  letter-spacing: 10px;
+  color: #90e0ef;
+}
+
+.keypad {
+  max-width: 300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+}
+
+.key {
+  padding: 18px;
+  border-radius: 12px;
+  border: 2px solid #334155;
+  background: #172231;
+  color: white;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.key:hover {
+  border-color: #90e0ef;
+}
+
+.clue-reward {
+  display: none;
+  margin-top: 20px;
+  padding: 18px;
+  background: rgba(255,183,3,.12);
+  border: 2px solid #ffb703;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.clue-reward.visible {
+  display: block;
+}
+
+.clue-digit {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffb703;
+  margin: 8px;
+}
+
+/* =========================
+   VICTOIRE
+========================= */
+
+.victory {
+  text-align: center;
+  border: 2px solid #90e0ef;
+  background: linear-gradient(
+    135deg,
+    rgba(0,119,182,.25),
+    rgba(56,176,0,.18)
+  );
+}
+
+.victory h2 {
+  color: #90e0ef;
+  font-size: 2.6rem;
+}
+
+.big-check {
+  font-size: 5rem;
+}
+
+.explanation {
+  text-align: left;
+  max-width: 800px;
+  margin: 25px auto;
+  background: rgba(0,0,0,.2);
+  padding: 20px;
+  border-radius: 15px;
+  line-height: 1.7;
+}
+
+.restart {
+  background: #ffb703;
+  color: #111;
+}
+
+/* =========================
+   AIDE
+========================= */
+
+.help {
+  margin-top: 15px;
+  background: rgba(144,224,239,.07);
+  border: 1px solid rgba(144,224,239,.2);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.help summary {
+  cursor: pointer;
+  color: #90e0ef;
+  font-weight: bold;
+}
+
+@media(max-width:650px) {
+  .mission {
+    padding: 20px;
+  }
+
+  .climate-diagram {
+    grid-template-columns: 1fr;
+  }
+
+  .code-number {
+    width: 42px;
+    height: 42px;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <header>
-    <div class="badge">SVT • 3e Prépa-Métiers</div>
-    <h1>🌍 MISSION 3</h1>
-    <div class="subtitle">QUI A DÉRÉGLÉ LA TERRE ?</div>
-  </header>
+<header>
+  <div class="badge">SVT • 3e Prépa-Métiers</div>
+  <h1>🌍 MISSION 3</h1>
+  <div class="subtitle">QUI A DÉRÉGLÉ LA TERRE ?</div>
+</header>
 
-  <div class="status">
-    <div class="status-card">
-      <strong id="score">0 / 4</strong>
-      Missions réussies
-    </div>
 
-    <div class="status-card">
-      <strong id="step">0 / 4</strong>
-      Étapes
-    </div>
+<!-- =========================
+     TABLEAU DE BORD
+========================= -->
 
-    <div class="status-card">
-      <strong id="timer">⏱️</strong>
-      Mission en cours
-    </div>
+<div class="dashboard">
+
+  <div class="dashboard-title">
+    🛰️ TABLEAU DE BORD DU LABORATOIRE
+  </div>
+
+  <div class="step-map">
+
+    <button class="step-button active" id="nav1" onclick="goToStep(1)">
+      1. Météo
+    </button>
+
+    <button class="step-button" id="nav2" onclick="goToStep(2)">
+      2. Climat
+    </button>
+
+    <button class="step-button" id="nav3" onclick="goToStep(3)">
+      3. Zones
+    </button>
+
+    <button class="step-button" id="nav4" onclick="goToStep(4)">
+      4. Activités
+    </button>
+
+    <button class="step-button" id="nav5" onclick="goToStep(5)">
+      5. GES
+    </button>
+
+    <button class="step-button" id="nav6" onclick="goToStep(6)">
+      6. Effet de serre
+    </button>
+
+    <button class="step-button" id="nav7" onclick="goToStep(7)">
+      7. Réchauffement
+    </button>
+
+    <button class="step-button" id="nav8" onclick="goToStep(8)">
+      8. Conséquences
+    </button>
+
+    <button class="step-button" id="nav9" onclick="goToStep(9)">
+      9. France
+    </button>
+
+    <button class="step-button" id="nav10" onclick="goToStep(10)">
+      🔐 Code
+    </button>
+
   </div>
 
   <div class="progress-container">
     <div class="progress" id="progress"></div>
   </div>
 
-  <!-- MISSION 1 -->
-  <section class="mission active" id="mission1">
+  <div class="code-panel">
+    🔎 <strong>LES CHIFFRES RÉCOLTÉS</strong>
 
-    <h2 class="mission-title">
-      <span class="mission-number">1</span>
-      Les indices du laboratoire
-    </h2>
-
-    <div class="story">
-      🚨 <strong>ALERTE !</strong><br>
-      Le système climatique de la Terre est en train de se dérégler.
-      Vous êtes dans un laboratoire scientifique et vous devez découvrir
-      ce qui est à l'origine de ce dérèglement.
-      <br><br>
-      Plusieurs indices sont présents dans le laboratoire.
+    <div class="code-numbers">
+      <div class="code-number" id="digit1">?</div>
+      <div class="code-number" id="digit2">?</div>
+      <div class="code-number" id="digit3">?</div>
+      <div class="code-number" id="digit4">?</div>
     </div>
 
-    <div class="question">
-      🔎 Sélectionnez les <strong>3 indices</strong> qui peuvent être directement
-      associés aux activités humaines responsables d'une augmentation des
-      gaz à effet de serre.
+    <div style="text-align:center;margin-top:8px;color:#cbd5e1;">
+      Chaque grande partie permet de découvrir un chiffre.
+      <br>
+      <strong>Vous pouvez revenir à n'importe quelle étape réussie
+      pour retrouver les indices.</strong>
     </div>
+  </div>
 
-    <div class="cards" id="clues">
+</div>
 
-      <button class="choice" data-correct="false">
-        🌧️ Une journée pluvieuse
-      </button>
 
-      <button class="choice" data-correct="true">
-        🏭 Les activités industrielles
-      </button>
+<!-- =========================
+     ÉTAPE 1
+========================= -->
 
-      <button class="choice" data-correct="true">
-        🚗 Les transports
-      </button>
+<section class="mission" id="mission1">
 
-      <button class="choice" data-correct="false">
-        🌙 La nuit
-      </button>
+<h2 class="mission-title">
+  <span class="mission-number">1</span>
+  Météo ou climat ?
+</h2>
 
-      <button class="choice" data-correct="true">
-        🔥 La combustion de combustibles
-      </button>
+<div class="story">
+  🚨 Le laboratoire vient de détecter une anomalie.
+  Pour commencer l'enquête, il faut distinguer deux notions
+  essentielles : <strong>la météo et le climat</strong>.
+</div>
 
-      <button class="choice" data-correct="false">
-        ❄️ Une journée froide
-      </button>
+<div class="question">
+  🔎 Parmi ces situations, lesquelles décrivent le climat ?
+</div>
 
-    </div>
+<div class="cards" id="weatherChoices">
 
-    <button class="action" onclick="validateMission1()">
-      🔐 Vérifier les indices
-    </button>
+<button class="choice" data-correct="false">
+  🌧️ À Bordeaux, il pleut ce soir.
+</button>
 
-    <div class="feedback" id="feedback1"></div>
+<button class="choice" data-correct="true">
+  🌡️ Les températures sont douces en hiver et chaudes en été.
+</button>
 
-  </section>
+<button class="choice" data-correct="false">
+  ⛈️ Un orage est prévu la semaine prochaine.
+</button>
 
+<button class="choice" data-correct="true">
+  🌳 En Amazonie, il fait chaud et humide durant toute l'année.
+</button>
 
-  <!-- MISSION 2 -->
-  <section class="mission hidden" id="mission2">
+</div>
 
-    <h2 class="mission-title">
-      <span class="mission-number">2</span>
-      Reconstituer la chaîne scientifique
-    </h2>
+<button class="action" onclick="validateStep1()">
+  🔐 Valider
+</button>
 
-    <div class="story">
-      🧪 Vous avez trouvé les premiers indices.
-      Mais le laboratoire indique qu'il faut maintenant comprendre
-      <strong>comment les activités humaines peuvent provoquer un réchauffement climatique</strong>.
-    </div>
+<div class="feedback" id="feedback1"></div>
 
-    <div class="question">
-      🧩 Remettez les éléments dans le bon ordre.
-    </div>
+<div class="clue-reward" id="reward1">
+  🔓 <strong>INDICE RÉCOLTÉ !</strong>
+  <div class="clue-digit">3</div>
+  Le premier chiffre du code est <strong>3</strong>.
+</div>
 
-    <p class="hint">
-      💡 Faites glisser les blocs pour les déplacer.
-    </p>
+</section>
 
-    <div class="sequence" id="sequence">
 
-      <div class="sequence-item" draggable="true" data-id="A">
-        <span>A</span>
-        Activités humaines
-      </div>
+<!-- =========================
+     ÉTAPE 2
+========================= -->
 
-      <div class="sequence-item" draggable="true" data-id="B">
-        <span>B</span>
-        Augmentation des gaz à effet de serre
-      </div>
+<section class="mission hidden" id="mission2">
 
-      <div class="sequence-item" draggable="true" data-id="C">
-        <span>C</span>
-        Réchauffement de la température moyenne
-      </div>
+<h2 class="mission-title">
+  <span class="mission-number">2</span>
+  La notion de climat
+</h2>
 
-      <div class="sequence-item" draggable="true" data-id="D">
-        <span>D</span>
-        Effet de serre renforcé
-      </div>
+<div class="story">
+  📁 Le laboratoire vous rappelle qu'une observation isolée
+  ne permet pas de caractériser le climat.
+</div>
 
-    </div>
+<div class="question">
+  Quelle affirmation est correcte ?
+</div>
 
-    <button class="action" onclick="validateMission2()">
-      🔐 Valider la chaîne
-    </button>
+<div class="cards">
 
-    <div class="feedback" id="feedback2"></div>
+<button class="choice" onclick="answerStep2(this,false)">
+  A — Une seule journée chaude suffit à définir le climat.
+</button>
 
-  </section>
+<button class="choice" onclick="answerStep2(this,true)">
+  B — Le climat décrit les conditions atmosphériques observées
+  sur une longue période.
+</button>
 
+<button class="choice" onclick="answerStep2(this,false)">
+  C — La météo et le climat sont exactement la même chose.
+</button>
 
-  <!-- MISSION 3 -->
-  <section class="mission hidden" id="mission3">
+</div>
 
-    <h2 class="mission-title">
-      <span class="mission-number">3</span>
-      Le dossier secret
-    </h2>
+<div class="feedback" id="feedback2"></div>
 
-    <div class="story">
-      📁 Vous trouvez un dossier portant la mention :
-      <strong>« MÉTÉO ≠ CLIMAT »</strong>.
-      <br><br>
-      Une dernière énigme bloque l'accès au dossier.
-    </div>
+</section>
 
-    <div class="question">
-      🌡️ Quelle affirmation permet de distinguer correctement la météo du climat ?
-    </div>
 
-    <div class="cards">
+<!-- =========================
+     ÉTAPE 3
+========================= -->
 
-      <button class="choice" data-answer="wrong"
-              onclick="answerMission3(this)">
-        A — Une semaine très chaude suffit à prouver que le climat change.
-      </button>
+<section class="mission hidden" id="mission3">
 
-      <button class="choice" data-answer="correct"
-              onclick="answerMission3(this)">
-        B — La météo décrit des conditions à court terme,
-        tandis que le climat s'étudie sur une longue période.
-      </button>
+<h2 class="mission-title">
+  <span class="mission-number">3</span>
+  Les grandes zones climatiques
+</h2>
 
-      <button class="choice" data-answer="wrong"
-              onclick="answerMission3(this)">
-        C — Une seule journée très chaude prouve que le climat mondial
-        s'est réchauffé.
-      </button>
+<div class="story">
+  🌍 Avant de comprendre le dérèglement climatique,
+  le laboratoire veut vérifier que vous savez reconnaître
+  les grandes zones climatiques de la Terre.
+</div>
 
-    </div>
+<div class="climate-diagram">
+  <div class="zone polar">❄️<br>ZONE POLAIRE</div>
+  <div class="zone temperate">🌿<br>ZONE TEMPÉRÉE</div>
+  <div class="zone tropical">☀️<br>ZONE TROPICALE</div>
+</div>
 
-    <div class="feedback" id="feedback3"></div>
+<div class="question">
+  Dans quelle zone climatique se situe principalement la France ?
+</div>
 
-  </section>
+<div class="cards">
 
+<button class="choice" onclick="answerStep3(this,false)">
+  ❄️ Zone polaire
+</button>
 
-  <!-- MISSION 4 -->
-  <section class="mission hidden" id="mission4">
+<button class="choice" onclick="answerStep3(this,true)">
+  🌿 Zone tempérée
+</button>
 
-    <h2 class="mission-title">
-      <span class="mission-number">4</span>
-      Les conséquences du dérèglement
-    </h2>
+<button class="choice" onclick="answerStep3(this,false)">
+  ☀️ Zone tropicale
+</button>
 
-    <div class="story">
-      ⚠️ Le laboratoire vous révèle enfin les conséquences possibles
-      du changement climatique actuel.
-      <br><br>
-      Pour désactiver l'alarme, vous devez sélectionner
-      <strong>4 conséquences liées au réchauffement climatique</strong>.
-    </div>
+</div>
 
-    <div class="question">
-      🌍 Sélectionnez les 4 bonnes réponses.
-    </div>
+<div class="feedback" id="feedback3"></div>
 
-    <div class="cards" id="consequences">
+</section>
 
-      <button class="choice" data-correct="true">
-        🌡️ Augmentation de la température moyenne
-      </button>
 
-      <button class="choice" data-correct="true">
-        🧊 Fonte des glaces
-      </button>
+<!-- =========================
+     ÉTAPE 4
+========================= -->
 
-      <button class="choice" data-correct="true">
-        🌊 Élévation du niveau des mers
-      </button>
+<section class="mission hidden" id="mission4">
 
-      <button class="choice" data-correct="true">
-        🐻 Perturbation des écosystèmes
-      </button>
+<h2 class="mission-title">
+  <span class="mission-number">4</span>
+  À la recherche des causes
+</h2>
 
-      <button class="choice" data-correct="false">
-        🌙 Disparition de la nuit
-      </button>
+<div class="story">
+  🔎 Le système détecte maintenant plusieurs activités humaines.
+  Certaines peuvent augmenter les émissions de gaz à effet de serre.
+</div>
 
-      <button class="choice" data-correct="false">
-        🚀 La Terre quitte son orbite
-      </button>
+<div class="question">
+  Sélectionnez les activités directement liées aux émissions de gaz
+  à effet de serre.
+</div>
 
-    </div>
+<div class="cards" id="activityChoices">
 
-    <button class="action" onclick="validateMission4()">
-      🔐 Vérifier les conséquences
-    </button>
+<button class="choice" data-correct="true">
+  🏭 Activités industrielles
+</button>
 
-    <div class="feedback" id="feedback4"></div>
+<button class="choice" data-correct="true">
+  🚗 Transports
+</button>
 
-  </section>
+<button class="choice" data-correct="false">
+  🌙 Alternance jour / nuit
+</button>
 
+<button class="choice" data-correct="true">
+  🔥 Combustion de combustibles
+</button>
 
-  <!-- CODE FINAL -->
-  <section class="mission hidden" id="final">
+</div>
 
-    <h2 class="mission-title">
-      <span class="mission-number">🔒</span>
-      Le verrou final
-    </h2>
+<button class="action" onclick="validateStep4()">
+  🔐 Identifier les causes
+</button>
 
-    <div class="story">
-      🛰️ Vous avez découvert les mécanismes du dérèglement climatique.
-      <br><br>
-      Le système central vous demande maintenant un
-      <strong>code à 4 chiffres</strong>.
-      <br><br>
-      Le code se trouve dans les indices obtenus pendant les différentes missions.
-    </div>
+<div class="feedback" id="feedback4"></div>
 
-    <div class="display" id="display">----</div>
+</section>
 
-    <div class="keypad">
 
-      <button class="key" onclick="pressKey('1')">1</button>
-      <button class="key" onclick="pressKey('2')">2</button>
-      <button class="key" onclick="pressKey('3')">3</button>
+<!-- =========================
+     ÉTAPE 5
+========================= -->
 
-      <button class="key" onclick="pressKey('4')">4</button>
-      <button class="key" onclick="pressKey('5')">5</button>
-      <button class="key" onclick="pressKey('6')">6</button>
+<section class="mission hidden" id="mission5">
 
-      <button class="key" onclick="pressKey('7')">7</button>
-      <button class="key" onclick="pressKey('8')">8</button>
-      <button class="key" onclick="pressKey('9')">9</button>
+<h2 class="mission-title">
+  <span class="mission-number">5</span>
+  Les gaz à effet de serre
+</h2>
 
-      <button class="key" onclick="clearCode()">⌫</button>
-      <button class="key" onclick="pressKey('0')">0</button>
-      <button class="key" onclick="validateCode()">✓</button>
+<div class="story">
+  🧪 Le laboratoire affiche :
+  <strong>« Comprendre les gaz à effet de serre »</strong>.
+</div>
 
-    </div>
+<div class="question">
+  Quelle phrase correspond au mécanisme étudié dans la mission ?
+</div>
 
-    <div class="feedback" id="feedbackFinal"></div>
+<div class="cards">
 
-  </section>
+<button class="choice" onclick="answerStep5(this,false)">
+  A — Les gaz à effet de serre refroidissent systématiquement la Terre.
+</button>
 
+<button class="choice" onclick="answerStep5(this,true)">
+  B — L'augmentation des gaz à effet de serre renforce l'effet de serre.
+</button>
 
-  <!-- VICTOIRE -->
-  <section class="mission victory hidden" id="victory">
+<button class="choice" onclick="answerStep5(this,false)">
+  C — Les gaz à effet de serre n'ont aucun lien avec la température.
+</button>
 
-    <div class="big-check">🎉🌍🎉</div>
+</div>
 
-    <h2>MISSION RÉUSSIE !</h2>
+<div class="feedback" id="feedback5"></div>
 
-    <p style="font-size:1.3rem;">
-      Vous avez réussi à comprendre pourquoi la Terre se réchauffe.
-    </p>
+</section>
 
-    <div class="explanation">
 
-      <h3>🧠 Ce qu'il fallait comprendre</h3>
+<!-- =========================
+     ÉTAPE 6
+========================= -->
 
-      <p>
-        Les activités humaines peuvent augmenter la quantité de gaz à effet
-        de serre dans l'atmosphère.
-      </p>
+<section class="mission hidden" id="mission6">
 
-      <p>
-        L'augmentation de ces gaz renforce l'effet de serre et contribue
-        à l'augmentation de la température moyenne de la Terre.
-      </p>
+<h2 class="mission-title">
+  <span class="mission-number">6</span>
+  L'effet de serre : utile ou dangereux ?
+</h2>
 
-      <p>
-        Le changement climatique peut entraîner différentes conséquences,
-        notamment une augmentation des températures, la fonte des glaces,
-        une élévation du niveau des mers et des perturbations des écosystèmes.
-      </p>
+<div class="story">
+  🌡️ Attention au piège !
+  L'effet de serre naturel est indispensable à la Terre.
+  Le problème étudié est son <strong>renforcement</strong>.
+</div>
 
-      <p>
-        Enfin, il ne faut pas confondre <strong>météo</strong> et
-        <strong>climat</strong> : la météo concerne les conditions
-        atmosphériques à court terme, tandis que le climat s'étudie
-        sur de longues périodes.
-      </p>
+<div class="question">
+  Quelle proposition est correcte ?
+</div>
 
-      <hr>
+<div class="cards">
 
-      <h3>🏆 Compétence mobilisée</h3>
+<button class="choice" onclick="answerStep6(this,true)">
+  A — L'effet de serre naturel contribue à rendre la Terre habitable.
+</button>
 
-      <p>
-        <strong>Expliquer les causes et les conséquences des changements
-        climatiques actuels de la Terre.</strong>
-      </p>
+<button class="choice" onclick="answerStep6(this,false)">
+  B — L'effet de serre est entièrement responsable de tous les problèmes
+  climatiques.
+</button>
 
-    </div>
+<button class="choice" onclick="answerStep6(this,false)">
+  C — Il faudrait supprimer totalement l'effet de serre.
+</button>
 
-    <button class="action restart" onclick="restartGame()">
-      🔄 Recommencer la mission
-    </button>
+</div>
 
-  </section>
+<div class="feedback" id="feedback6"></div>
+
+</section>
+
+
+<!-- =========================
+     ÉTAPE 7
+========================= -->
+
+<section class="mission hidden" id="mission7">
+
+<h2 class="mission-title">
+  <span class="mission-number">7</span>
+  Reconstituer la chaîne du réchauffement
+</h2>
+
+<div class="story">
+  🧩 Le laboratoire vous demande de reconstituer le mécanisme
+  permettant d'expliquer le réchauffement actuel.
+</div>
+
+<div class="question">
+  Placez les éléments dans le bon ordre.
+</div>
+
+<div class="sequence" id="sequence">
+
+<div class="sequence-item" draggable="true" data-id="A">
+  <span>A</span>
+  Activités humaines
+</div>
+
+<div class="sequence-item" draggable="true" data-id="B">
+  <span>B</span>
+  Augmentation des gaz à effet de serre
+</div>
+
+<div class="sequence-item" draggable="true" data-id="C">
+  <span>C</span>
+  Réchauffement de la température moyenne
+</div>
+
+<div class="sequence-item" draggable="true" data-id="D">
+  <span>D</span>
+  Renforcement de l'effet de serre
+</div>
+
+</div>
+
+<button class="action" onclick="validateStep7()">
+  🔐 Vérifier la chaîne
+</button>
+
+<div class="feedback" id="feedback7"></div>
+
+<div class="clue-reward" id="reward2">
+  🔓 <strong>INDICE RÉCOLTÉ !</strong>
+  <div class="clue-digit">1</div>
+  Le deuxième chiffre du code est <strong>1</strong>.
+</div>
+
+</section>
+
+
+<!-- =========================
+     ÉTAPE 8
+========================= -->
+
+<section class="mission hidden" id="mission8">
+
+<h2 class="mission-title">
+  <span class="mission-number">8</span>
+  Les conséquences à long terme
+</h2>
+
+<div class="story">
+  ⚠️ Le système de sécurité affiche plusieurs conséquences possibles.
+  Certaines correspondent aux effets à long terme d'un réchauffement
+  climatique trop rapide.
+</div>
+
+<div class="question">
+  Sélectionnez les conséquences étudiées.
+</div>
+
+<div class="cards" id="consequenceChoices">
+
+<button class="choice" data-correct="true">
+  🌡️ Augmentation des températures
+</button>
+
+<button class="choice" data-correct="true">
+  🧊 Fonte des glaces
+</button>
+
+<button class="choice" data-correct="true">
+  🌊 Élévation du niveau des mers
+</button>
+
+<button class="choice" data-correct="true">
+  🐾 Perturbation des écosystèmes
+</button>
+
+<button class="choice" data-correct="false">
+  🌙 Disparition de la nuit
+</button>
+
+<button class="choice" data-correct="false">
+  🚀 La Terre quitte son orbite
+</button>
+
+</div>
+
+<button class="action" onclick="validateStep8()">
+  🔐 Vérifier
+</button>
+
+<div class="feedback" id="feedback8"></div>
+
+</section>
+
+
+<!-- =========================
+     ÉTAPE 9
+========================= -->
+
+<section class="mission hidden" id="mission9">
+
+<h2 class="mission-title">
+  <span class="mission-number">9</span>
+  Et la France dans tout ça ?
+</h2>
+
+<div class="story">
+  🇫🇷 Le dernier dossier concerne l'impact de la France
+  par rapport au reste du monde.
+  <br><br>
+  Le document du cours invite à <strong>évaluer l'impact de la France
+  par rapport au reste du monde</strong>.
+</div>
+
+<div class="question">
+  Quelle conclusion correspond le mieux à cette étude ?
+</div>
+
+<div class="cards">
+
+<button class="choice" onclick="answerStep9(this,false)">
+  A — La France est la seule responsable du réchauffement mondial.
+</button>
+
+<button class="choice" onclick="answerStep9(this,true)">
+  B — La France participe aux émissions responsables du réchauffement
+  global, mais elle doit être comparée au reste du monde.
+</button>
+
+<button class="choice" onclick="answerStep9(this,false)">
+  C — La France n'a absolument aucun impact sur le climat.
+</button>
+
+</div>
+
+<div class="feedback" id="feedback9"></div>
+
+<div class="clue-reward" id="reward3">
+  🔓 <strong>INDICE RÉCOLTÉ !</strong>
+  <div class="clue-digit">4</div>
+  Le troisième chiffre du code est <strong>4</strong>.
+</div>
+
+</section>
+
+
+<!-- =========================
+     ÉTAPE 10 — CODE
+========================= -->
+
+<section class="mission hidden" id="mission10">
+
+<h2 class="mission-title">
+  <span class="mission-number">🔐</span>
+  Le verrou final
+</h2>
+
+<div class="story">
+  🛰️ Vous avez maintenant étudié les différentes notions de la mission.
+  <br><br>
+  Les indices récoltés sont affichés dans le tableau de bord.
+  <br><br>
+  <strong>Vous pouvez revenir sur les étapes précédentes
+  pour retrouver les chiffres.</strong>
+</div>
+
+<div style="text-align:center">
+
+  <h3>🔎 Votre code</h3>
+
+  <div class="final-code-display" id="finalDisplay">
+    - - - -
+  </div>
+
+</div>
+
+<div class="keypad">
+
+<button class="key" onclick="pressKey('1')">1</button>
+<button class="key" onclick="pressKey('2')">2</button>
+<button class="key" onclick="pressKey('3')">3</button>
+
+<button class="key" onclick="pressKey('4')">4</button>
+<button class="key" onclick="pressKey('5')">5</button>
+<button class="key" onclick="pressKey('6')">6</button>
+
+<button class="key" onclick="pressKey('7')">7</button>
+<button class="key" onclick="pressKey('8')">8</button>
+<button class="key" onclick="pressKey('9')">9</button>
+
+<button class="key" onclick="clearCode()">⌫</button>
+<button class="key" onclick="pressKey('0')">0</button>
+<button class="key" onclick="validateFinalCode()">✓</button>
+
+</div>
+
+<div class="feedback" id="feedback10"></div>
+
+<div class="help">
+<details>
+<summary>💡 Besoin d'aide ?</summary>
+<p>
+Les chiffres ne sont pas cachés définitivement.
+Utilisez le tableau de bord en haut de la page pour revenir
+sur les étapes déjà réussies.
+</p>
+<p>
+<strong>Ordre du code :</strong>
+<br>
+Indice 1 → Indice 2 → Indice 3 → Indice 4.
+</p>
+</details>
+</div>
+
+</section>
+
+
+<!-- =========================
+     VICTOIRE
+========================= -->
+
+<section class="mission victory hidden" id="victory">
+
+<div class="big-check">🎉🌍🎉</div>
+
+<h2>MISSION RÉUSSIE !</h2>
+
+<p style="font-size:1.3rem;">
+> Le système climatique est déverrouillé !
+</p>
+
+<div class="explanation">
+
+<h3>🧠 Ce qu'il fallait retenir</h3>
+
+<p>
+<strong>1. Météo et climat</strong><br>
+La météo décrit des conditions atmosphériques à court terme,
+alors que le climat s'étudie sur une longue période.
+</p>
+
+<p>
+<strong>2. Les zones climatiques</strong><br>
+La Terre possède de grandes zones climatiques, notamment
+les zones polaire, tempérée et tropicale.
+</p>
+
+<p>
+<strong>3. Les activités humaines</strong><br>
+Certaines activités humaines, notamment les activités industrielles,
+les transports et la combustion de combustibles, sont liées aux émissions
+de gaz à effet de serre.
+</p>
+
+<p>
+<strong>4. L'effet de serre</strong><br>
+L'effet de serre naturel est utile à la Terre.
+Son renforcement contribue cependant au réchauffement de la planète.
+</p>
+
+<p>
+<strong>5. Les conséquences</strong><br>
+Le réchauffement climatique peut entraîner des changements
+à long terme, comme une augmentation des températures,
+la fonte des glaces, l'élévation du niveau des mers et
+des perturbations des écosystèmes.
+</p>
+
+<p>
+<strong>6. La France</strong><br>
+La France participe aux émissions qui contribuent au réchauffement
+global. Son impact doit être évalué en comparaison avec celui du reste
+du monde.
+</p>
+
+<hr>
+
+<h3>🏆 Objectif de la mission</h3>
+
+<p>
+<strong>
+Être capable d'expliquer les causes et les conséquences
+des changements climatiques actuels de la Terre.
+</strong>
+</p>
+
+</div>
+
+<button class="action restart" onclick="restartGame()">
+🔄 Recommencer l'escape game
+</button>
+
+</section>
 
 </div>
 
 
 <script>
 
-  let score = 0;
-  let currentStep = 0;
-  let code = "";
+/* ==========================================
+   ÉTAT DU JEU
+========================================== */
 
-  const finalCode = "3142";
+let currentStep = 1;
 
-  function updateStatus() {
-    document.getElementById("score").textContent = score + " / 4";
-    document.getElementById("step").textContent = currentStep + " / 4";
-    document.getElementById("progress").style.width =
-      (currentStep / 4 * 100) + "%";
+const completed = {
+  1:false,
+  2:false,
+  3:false,
+  4:false,
+  5:false,
+  6:false,
+  7:false,
+  8:false,
+  9:false
+};
+
+const digits = {
+  1:null,
+  2:null,
+  3:null,
+  4:2
+};
+
+let finalCode = "";
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+function showStep(step) {
+
+  document.querySelectorAll(".mission").forEach(section => {
+    section.classList.add("hidden");
+  });
+
+  if (step <= 9) {
+    document.getElementById("mission" + step).classList.remove("hidden");
+  } else {
+    document.getElementById("mission10").classList.remove("hidden");
   }
 
-  function showMission(id) {
-    document.querySelectorAll(".mission").forEach(section => {
-      section.classList.add("hidden");
-      section.classList.remove("active");
-    });
+  currentStep = step;
 
-    const section = document.getElementById(id);
+  updateNavigation();
 
-    if (section) {
-      section.classList.remove("hidden");
-      section.classList.add("active");
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+
+function goToStep(step) {
+
+  /*
+    Une étape peut être revisitée uniquement si elle a déjà été réussie,
+    ou si elle est l'étape actuellement disponible.
+  */
+
+  if (step === 1 || completed[step - 1] || completed[step]) {
+    showStep(step);
+  }
+}
+
+
+function updateNavigation() {
+
+  for (let i=1; i<=10; i++) {
+
+    const button = document.getElementById("nav" + i);
+
+    if (!button) continue;
+
+    button.classList.remove("active","completed","locked");
+
+    if (i === currentStep) {
+      button.classList.add("active");
+    }
+
+    if (i <= 9 && completed[i]) {
+      button.classList.add("completed");
+    }
+
+    if (i === 10 && allLearningStepsCompleted()) {
+      button.classList.add("completed");
+    }
+
+    if (i > 1 && i <= 9 && !completed[i-1] && !completed[i]) {
+      button.classList.add("locked");
+    }
+
+    if (i === 10 && !allLearningStepsCompleted()) {
+      button.classList.add("locked");
     }
   }
 
+  const finished =
+    Object.values(completed).filter(Boolean).length;
 
-  /* -----------------------------
-     MISSION 1
-  ----------------------------- */
+  document.getElementById("progress").style.width =
+    (finished / 9 * 100) + "%";
 
-  function validateMission1() {
+  updateDigits();
+}
 
-    const choices = document.querySelectorAll("#clues .choice");
-    const selected = [...choices].filter(c => c.classList.contains("selected"));
 
-    const feedback = document.getElementById("feedback1");
+function allLearningStepsCompleted() {
+  return Object.values(completed).every(value => value === true);
+}
 
-    if (selected.length !== 3) {
-      feedback.className = "feedback error";
-      feedback.textContent =
-        "⚠️ Vous devez sélectionner exactement 3 indices.";
-      return;
-    }
 
-    const correct =
-      selected.every(c => c.dataset.correct === "true");
+/* ==========================================
+   CHIFFRES
+========================================== */
 
-    if (correct) {
+function updateDigits() {
 
-      choices.forEach(c => {
-        if (c.dataset.correct === "true") {
-          c.classList.add("correct");
-        }
-      });
+  for (let i=1; i<=4; i++) {
 
-      feedback.className = "feedback success";
-      feedback.innerHTML =
-        "✅ Bravo ! Les activités industrielles, les transports et la combustion " +
-        "sont bien liées aux émissions de gaz à effet de serre.";
+    const element =
+      document.getElementById("digit" + i);
 
-      score++;
-      currentStep++;
-
-      updateStatus();
-
-      setTimeout(() => {
-        showMission("mission2");
-      }, 1300);
-
+    if (digits[i] !== null) {
+      element.textContent = digits[i];
+      element.classList.add("found");
     } else {
-
-      selected.forEach(c => {
-        if (c.dataset.correct === "false") {
-          c.classList.add("wrong");
-        }
-      });
-
-      feedback.className = "feedback error";
-      feedback.innerHTML =
-        "❌ Certains indices ne sont pas liés directement aux activités humaines " +
-        "responsables de l'augmentation des gaz à effet de serre. Essayez encore.";
+      element.textContent = "?";
+      element.classList.remove("found");
     }
   }
+}
 
 
-  document.querySelectorAll("#clues .choice").forEach(choice => {
+function awardDigit(number,digit) {
 
-    choice.addEventListener("click", () => {
+  if (digits[number] !== null) return;
 
-      if (choice.classList.contains("selected")) {
-        choice.classList.remove("selected");
-      } else {
-        choice.classList.add("selected");
-      }
+  digits[number] = digit;
 
-      choice.classList.remove("wrong");
-    });
+  updateDigits();
+}
 
+
+/* ==========================================
+   ÉTAPE 1
+========================================== */
+
+function validateStep1() {
+
+  const choices =
+    [...document.querySelectorAll("#weatherChoices .choice")];
+
+  const selected =
+    choices.filter(c => c.classList.contains("selected"));
+
+  const feedback =
+    document.getElementById("feedback1");
+
+  if (selected.length !== 2) {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "⚠️ Sélectionnez les 2 situations qui décrivent le climat.";
+
+    return;
+  }
+
+  if (selected.every(c => c.dataset.correct === "true")) {
+
+    feedback.className = "feedback success";
+
+    feedback.innerHTML =
+      "✅ Bravo ! Vous distinguez maintenant les situations météorologiques " +
+      "des caractéristiques climatiques.";
+
+    completed[1] = true;
+
+    awardDigit(1,3);
+
+    document.getElementById("reward1")
+      .classList.add("visible");
+
+    updateNavigation();
+
+  } else {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Une réponse n'est pas correcte. Pensez à la durée d'observation.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 2
+========================================== */
+
+function answerStep2(button,correct) {
+
+  const buttons =
+    document.querySelectorAll("#mission2 .choice");
+
+  buttons.forEach(b =>
+    b.classList.remove("correct","wrong")
+  );
+
+  const feedback =
+    document.getElementById("feedback2");
+
+  if (correct) {
+
+    button.classList.add("correct");
+
+    feedback.className = "feedback success";
+
+    feedback.textContent =
+      "✅ Exact ! Le climat s'étudie sur une longue période.";
+
+    completed[2] = true;
+
+    updateNavigation();
+
+  } else {
+
+    button.classList.add("wrong");
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Une observation isolée correspond plutôt à la météo.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 3
+========================================== */
+
+function answerStep3(button,correct) {
+
+  const feedback =
+    document.getElementById("feedback3");
+
+  document.querySelectorAll("#mission3 .choice")
+    .forEach(b => b.classList.remove("correct","wrong"));
+
+  if (correct) {
+
+    button.classList.add("correct");
+
+    feedback.className = "feedback success";
+
+    feedback.textContent =
+      "✅ Correct ! La France se situe dans la zone tempérée.";
+
+    completed[3] = true;
+
+    updateNavigation();
+
+  } else {
+
+    button.classList.add("wrong");
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Regardez les caractéristiques des grandes zones climatiques.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 4
+========================================== */
+
+function validateStep4() {
+
+  const choices =
+    [...document.querySelectorAll("#activityChoices .choice")];
+
+  const selected =
+    choices.filter(c => c.classList.contains("selected"));
+
+  const feedback =
+    document.getElementById("feedback4");
+
+  if (selected.length !== 3) {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "⚠️ Sélectionnez exactement 3 activités.";
+
+    return;
+  }
+
+  if (selected.every(c => c.dataset.correct === "true")) {
+
+    feedback.className = "feedback success";
+
+    feedback.textContent =
+      "✅ Très bien ! Vous avez identifié les principales activités proposées.";
+
+    completed[4] = true;
+
+    updateNavigation();
+
+  } else {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Une activité sélectionnée ne correspond pas aux indices.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 5
+========================================== */
+
+function answerStep5(button,correct) {
+
+  const feedback =
+    document.getElementById("feedback5");
+
+  document.querySelectorAll("#mission5 .choice")
+    .forEach(b => b.classList.remove("correct","wrong"));
+
+  if (correct) {
+
+    button.classList.add("correct");
+
+    feedback.className = "feedback success";
+
+    feedback.textContent =
+      "✅ Exact ! Une augmentation des gaz à effet de serre renforce l'effet de serre.";
+
+    completed[5] = true;
+
+    updateNavigation();
+
+  } else {
+
+    button.classList.add("wrong");
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Relisez le lien entre gaz à effet de serre et effet de serre.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 6
+========================================== */
+
+function answerStep6(button,correct) {
+
+  const feedback =
+    document.getElementById("feedback6");
+
+  document.querySelectorAll("#mission6 .choice")
+    .forEach(b => b.classList.remove("correct","wrong"));
+
+  if (correct) {
+
+    button.classList.add("correct");
+
+    feedback.className = "feedback success";
+
+    feedback.textContent =
+      "✅ Exact ! L'effet de serre naturel est utile à la Terre. " +
+      "Le problème étudié est son renforcement.";
+
+    completed[6] = true;
+
+    updateNavigation();
+
+  } else {
+
+    button.classList.add("wrong");
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Attention : il ne faut pas confondre effet de serre naturel " +
+      "et renforcement de l'effet de serre.";
+  }
+}
+
+
+/* ==========================================
+   DRAG & DROP — ÉTAPE 7
+========================================== */
+
+let draggedItem = null;
+
+document.querySelectorAll(".sequence-item")
+.forEach(item => {
+
+  item.addEventListener("dragstart",() => {
+    draggedItem = item;
   });
 
+  item.addEventListener("dragover",event => {
 
-  /* -----------------------------
-     MISSION 2 — DRAG & DROP
-  ----------------------------- */
+    event.preventDefault();
 
-  let draggedItem = null;
+    if (!draggedItem || draggedItem === item) return;
 
-  document.querySelectorAll(".sequence-item").forEach(item => {
-
-    item.addEventListener("dragstart", () => {
-      draggedItem = item;
-      item.classList.add("dragging");
-    });
-
-    item.addEventListener("dragend", () => {
-      item.classList.remove("dragging");
-    });
-
-    item.addEventListener("dragover", event => {
-      event.preventDefault();
-
-      const container = document.getElementById("sequence");
-      const items = [...container.querySelectorAll(".sequence-item")];
-
-      const currentIndex = items.indexOf(draggedItem);
-      const targetIndex = items.indexOf(item);
-
-      if (currentIndex < targetIndex) {
-        container.insertBefore(
-          draggedItem,
-          item.nextSibling
-        );
-      } else {
-        container.insertBefore(
-          draggedItem,
-          item
-        );
-      }
-    });
-
-  });
-
-
-  function validateMission2() {
+    const container =
+      document.getElementById("sequence");
 
     const items =
-      [...document.querySelectorAll("#sequence .sequence-item")]
-      .map(item => item.dataset.id);
+      [...container.querySelectorAll(".sequence-item")];
 
-    const correctOrder = ["A", "B", "D", "C"];
+    const currentIndex =
+      items.indexOf(draggedItem);
 
-    const feedback = document.getElementById("feedback2");
+    const targetIndex =
+      items.indexOf(item);
 
-    if (JSON.stringify(items) === JSON.stringify(correctOrder)) {
-
-      feedback.className = "feedback success";
-      feedback.innerHTML =
-        "✅ Excellent ! La chaîne scientifique est correcte : " +
-        "<strong>activités humaines → augmentation des gaz à effet de serre → " +
-        "effet de serre renforcé → réchauffement de la température moyenne.</strong>";
-
-      score++;
-      currentStep++;
-
-      updateStatus();
-
-      setTimeout(() => {
-        showMission("mission3");
-      }, 1600);
-
-    } else {
-
-      feedback.className = "feedback error";
-      feedback.innerHTML =
-        "❌ Ce n'est pas encore le bon ordre. " +
-        "Demandez-vous ce qui vient d'abord, puis ce qui se produit ensuite.";
-    }
-  }
-
-
-  /* -----------------------------
-     MISSION 3
-  ----------------------------- */
-
-  function answerMission3(button) {
-
-    const buttons =
-      document.querySelectorAll("#mission3 .choice");
-
-    const feedback =
-      document.getElementById("feedback3");
-
-    buttons.forEach(b => {
-      b.classList.remove("correct", "wrong");
-    });
-
-    if (button.dataset.answer === "correct") {
-
-      button.classList.add("correct");
-
-      feedback.className = "feedback success";
-      feedback.innerHTML =
-        "✅ Exact ! La météo concerne les conditions atmosphériques " +
-        "à court terme, alors que le climat s'étudie sur une longue période.";
-
-      score++;
-      currentStep++;
-
-      updateStatus();
-
-      setTimeout(() => {
-        showMission("mission4");
-      }, 1500);
-
-    } else {
-
-      button.classList.add("wrong");
-
-      feedback.className = "feedback error";
-      feedback.innerHTML =
-        "❌ Attention : un événement météorologique isolé ne suffit pas " +
-        "à caractériser une évolution du climat.";
-    }
-  }
-
-
-  /* -----------------------------
-     MISSION 4
-  ----------------------------- */
-
-  function validateMission4() {
-
-    const choices =
-      document.querySelectorAll("#consequences .choice");
-
-    const selected =
-      [...choices].filter(c =>
-        c.classList.contains("selected")
+    if (currentIndex < targetIndex) {
+      container.insertBefore(
+        draggedItem,
+        item.nextSibling
       );
-
-    const feedback =
-      document.getElementById("feedback4");
-
-    if (selected.length !== 4) {
-
-      feedback.className = "feedback error";
-      feedback.textContent =
-        "⚠️ Sélectionnez exactement 4 conséquences.";
-
-      return;
-    }
-
-    const correct =
-      selected.every(c =>
-        c.dataset.correct === "true"
-      );
-
-    if (correct) {
-
-      selected.forEach(c => {
-        c.classList.add("correct");
-      });
-
-      feedback.className = "feedback success";
-      feedback.innerHTML =
-        "✅ Bravo ! Vous avez identifié les principales conséquences " +
-        "présentées dans le dossier.";
-
-      score++;
-      currentStep++;
-
-      updateStatus();
-
-      setTimeout(() => {
-        showMission("final");
-      }, 1500);
-
     } else {
-
-      selected.forEach(c => {
-        if (c.dataset.correct === "false") {
-          c.classList.add("wrong");
-        }
-      });
-
-      feedback.className = "feedback error";
-      feedback.innerHTML =
-        "❌ Une ou plusieurs réponses sont incorrectes. " +
-        "Analysez attentivement les conséquences proposées.";
+      container.insertBefore(
+        draggedItem,
+        item
+      );
     }
+  });
+
+});
+
+
+function validateStep7() {
+
+  const order =
+    [...document.querySelectorAll("#sequence .sequence-item")]
+    .map(item => item.dataset.id);
+
+  const correctOrder =
+    ["A","B","D","C"];
+
+  const feedback =
+    document.getElementById("feedback7");
+
+  if (JSON.stringify(order) === JSON.stringify(correctOrder)) {
+
+    feedback.className = "feedback success";
+
+    feedback.innerHTML =
+      "✅ Chaîne correcte : activités humaines → augmentation des gaz " +
+      "à effet de serre → renforcement de l'effet de serre → " +
+      "réchauffement de la température moyenne.";
+
+    completed[7] = true;
+
+    awardDigit(2,1);
+
+    document.getElementById("reward2")
+      .classList.add("visible");
+
+    updateNavigation();
+
+  } else {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Ce n'est pas le bon ordre. Demandez-vous quelle est la première cause.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 8
+========================================== */
+
+function validateStep8() {
+
+  const choices =
+    [...document.querySelectorAll("#consequenceChoices .choice")];
+
+  const selected =
+    choices.filter(c => c.classList.contains("selected"));
+
+  const feedback =
+    document.getElementById("feedback8");
+
+  if (selected.length !== 4) {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "⚠️ Sélectionnez exactement 4 conséquences.";
+
+    return;
   }
 
+  if (selected.every(c => c.dataset.correct === "true")) {
 
-  document.querySelectorAll("#consequences .choice").forEach(choice => {
+    feedback.className = "feedback success";
 
-    choice.addEventListener("click", () => {
+    feedback.textContent =
+      "✅ Bravo ! Vous avez identifié les conséquences attendues.";
 
-      if (choice.classList.contains("selected")) {
-        choice.classList.remove("selected");
-      } else {
-        choice.classList.add("selected");
-      }
+    completed[8] = true;
 
-      choice.classList.remove("wrong");
-    });
+    updateNavigation();
+
+  } else {
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Une ou plusieurs réponses ne correspondent pas aux conséquences étudiées.";
+  }
+}
+
+
+/* ==========================================
+   ÉTAPE 9
+========================================== */
+
+function answerStep9(button,correct) {
+
+  const feedback =
+    document.getElementById("feedback9");
+
+  document.querySelectorAll("#mission9 .choice")
+    .forEach(b => b.classList.remove("correct","wrong"));
+
+  if (correct) {
+
+    button.classList.add("correct");
+
+    feedback.className = "feedback success";
+
+    feedback.textContent =
+      "✅ Exact ! L'impact de la France doit être évalué " +
+      "en comparaison avec le reste du monde.";
+
+    completed[9] = true;
+
+    awardDigit(3,4);
+
+    document.getElementById("reward3")
+      .classList.add("visible");
+
+    updateNavigation();
+
+  } else {
+
+    button.classList.add("wrong");
+
+    feedback.className = "feedback error";
+
+    feedback.textContent =
+      "❌ Il faut comparer l'impact de la France avec celui du reste du monde.";
+  }
+}
+
+
+/* ==========================================
+   SÉLECTION DES CARTES
+========================================== */
+
+document.querySelectorAll(".choice[data-correct]")
+.forEach(choice => {
+
+  choice.addEventListener("click",() => {
+
+    choice.classList.toggle("selected");
+
+    choice.classList.remove("wrong");
 
   });
 
+});
 
-  /* -----------------------------
-     CODE FINAL
-  ----------------------------- */
 
-  function pressKey(number) {
+/* ==========================================
+   CODE FINAL
+========================================== */
 
-    if (code.length < 4) {
-      code += number;
-      updateDisplay();
-    }
+let enteredCode = "";
+
+function pressKey(number) {
+
+  if (enteredCode.length < 4) {
+
+    enteredCode += number;
+
+    updateFinalDisplay();
+  }
+}
+
+
+function clearCode() {
+
+  enteredCode =
+    enteredCode.slice(0,-1);
+
+  updateFinalDisplay();
+}
+
+
+function updateFinalDisplay() {
+
+  let display = "";
+
+  for(let i=0;i<4;i++) {
+
+    display += enteredCode[i] || "-";
+
+    if(i<3) display += " ";
   }
 
+  document.getElementById("finalDisplay")
+    .textContent = display;
+}
 
-  function clearCode() {
 
-    code = code.slice(0, -1);
-    updateDisplay();
+function validateFinalCode() {
+
+  const feedback =
+    document.getElementById("feedback10");
+
+  finalCode =
+    "" +
+    digits[1] +
+    digits[2] +
+    digits[3] +
+    digits[4];
+
+  if(!allLearningStepsCompleted()) {
+
+    feedback.className = "feedback error";
+
+    feedback.innerHTML =
+      "🔒 Le verrou reste fermé. Vous devez d'abord terminer " +
+      "les 9 étapes scientifiques.";
+
+    return;
   }
 
+  if(enteredCode === finalCode) {
 
-  function updateDisplay() {
+    feedback.className = "feedback success";
 
-    let display = "";
+    feedback.innerHTML =
+      "🔓 CODE ACCEPTÉ ! Le système climatique est déverrouillé.";
 
-    for (let i = 0; i < 4; i++) {
-      display += code[i] || "-";
+    setTimeout(showVictory,900);
 
-      if (i < 3) {
-        display += " ";
-      }
-    }
+  } else {
 
-    document.getElementById("display").textContent = display;
+    feedback.className = "feedback error";
+
+    feedback.innerHTML =
+      "🔒 CODE INCORRECT. Revenez sur les étapes précédentes " +
+      "pour retrouver les chiffres.";
   }
+}
 
 
-  function validateCode() {
+/* ==========================================
+   VICTOIRE
+========================================== */
 
-    const feedback =
-      document.getElementById("feedbackFinal");
+function showVictory() {
 
-    if (code === finalCode) {
+  document.querySelectorAll(".mission")
+    .forEach(section =>
+      section.classList.add("hidden")
+    );
 
-      feedback.className = "feedback success";
-      feedback.innerHTML =
-        "🔓 CODE ACCEPTÉ ! Le système climatique est déverrouillé.";
+  document.getElementById("victory")
+    .classList.remove("hidden");
 
-      setTimeout(() => {
-        showVictory();
-      }, 1000);
+  createConfetti();
 
-    } else {
-
-      feedback.className = "feedback error";
-      feedback.innerHTML =
-        "🔒 CODE REFUSÉ. Le verrou reste actif. " +
-        "Reprenez les indices scientifiques de la mission.";
-    }
-  }
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
 
 
-  function showVictory() {
+/* ==========================================
+   CONFETTIS
+========================================== */
 
-    document.querySelectorAll(".mission").forEach(section => {
-      section.classList.add("hidden");
-      section.classList.remove("active");
-    });
+function createConfetti() {
 
-    document.getElementById("victory").classList.remove("hidden");
+  const colors = [
+    "#00b4d8",
+    "#90e0ef",
+    "#ffb703",
+    "#38b000",
+    "#ffffff"
+  ];
 
-    createConfetti();
+  for(let i=0;i<80;i++) {
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
+    const confetti =
+      document.createElement("div");
 
+    confetti.style.position = "fixed";
+    confetti.style.width = "8px";
+    confetti.style.height = "12px";
 
-  /* -----------------------------
-     CONFETTIS
-  ----------------------------- */
+    confetti.style.background =
+      colors[Math.floor(Math.random()*colors.length)];
 
-  function createConfetti() {
+    confetti.style.left =
+      Math.random()*100 + "vw";
 
-    const colors = [
-      "#00b4d8",
-      "#90e0ef",
-      "#ffb703",
-      "#38b000",
-      "#ffffff"
-    ];
+    confetti.style.top = "-20px";
 
-    for (let i = 0; i < 80; i++) {
+    confetti.style.zIndex = "9999";
 
-      const confetti = document.createElement("div");
+    confetti.style.transform =
+      `rotate(${Math.random()*360}deg)`;
 
-      confetti.style.position = "fixed";
-      confetti.style.width = "8px";
-      confetti.style.height = "12px";
-      confetti.style.background =
-        colors[Math.floor(Math.random() * colors.length)];
+    document.body.appendChild(confetti);
 
-      confetti.style.left =
-        Math.random() * 100 + "vw";
-
-      confetti.style.top = "-20px";
-
-      confetti.style.zIndex = "9999";
-
-      confetti.style.transform =
-        `rotate(${Math.random() * 360}deg)`;
-
-      confetti.style.borderRadius = "2px";
-
-      document.body.appendChild(confetti);
-
-      const duration =
-        2500 + Math.random() * 2500;
-
-      const animation =
-        confetti.animate(
-          [
-            {
-              transform:
-                `translateY(0) rotate(0deg)`,
-              opacity: 1
-            },
-            {
-              transform:
-                `translateY(110vh) rotate(720deg)`,
-              opacity: 0
-            }
-          ],
+    const animation =
+      confetti.animate(
+        [
           {
-            duration: duration,
-            easing: "cubic-bezier(.2,.8,.4,1)"
+            transform:"translateY(0) rotate(0deg)",
+            opacity:1
+          },
+          {
+            transform:"translateY(110vh) rotate(720deg)",
+            opacity:0
           }
-        );
+        ],
+        {
+          duration:2500 + Math.random()*2500,
+          easing:"cubic-bezier(.2,.8,.4,1)"
+        }
+      );
 
-      animation.onfinish = () => {
-        confetti.remove();
-      };
-    }
+    animation.onfinish = () =>
+      confetti.remove();
+  }
+}
+
+
+/* ==========================================
+   RESTART
+========================================== */
+
+function restartGame() {
+
+  currentStep = 1;
+
+  for(let i=1;i<=9;i++) {
+    completed[i] = false;
   }
 
+  digits[1] = null;
+  digits[2] = null;
+  digits[3] = null;
 
-  /* -----------------------------
-     RESTART
-  ----------------------------- */
+  enteredCode = "";
 
-  function restartGame() {
-
-    score = 0;
-    currentStep = 0;
-    code = "";
-
-    updateStatus();
-    updateDisplay();
-
-    document.querySelectorAll(".choice").forEach(choice => {
+  document.querySelectorAll(".choice")
+    .forEach(choice =>
       choice.classList.remove(
         "selected",
         "correct",
         "wrong"
-      );
-    });
+      )
+    );
 
-    document.querySelectorAll(".feedback").forEach(feedback => {
+  document.querySelectorAll(".feedback")
+    .forEach(feedback => {
       feedback.className = "feedback";
       feedback.innerHTML = "";
     });
 
-    const sequence = document.getElementById("sequence");
+  document.querySelectorAll(".clue-reward")
+    .forEach(reward =>
+      reward.classList.remove("visible")
+    );
 
-    const originalOrder = ["A", "B", "C", "D"];
+  const sequence =
+    document.getElementById("sequence");
 
-    originalOrder.forEach(id => {
+  ["A","B","C","D"].forEach(id => {
 
-      const item =
-        sequence.querySelector(`[data-id="${id}"]`);
+    const item =
+      sequence.querySelector(`[data-id="${id}"]`);
 
-      if (item) {
-        sequence.appendChild(item);
-      }
+    if(item) {
+      sequence.appendChild(item);
+    }
+  });
 
-    });
+  updateFinalDisplay();
+  updateNavigation();
+  updateDigits();
 
-    showMission("mission1");
-  }
+  showStep(1);
+}
 
 
-  updateStatus();
+/* ==========================================
+   INITIALISATION
+========================================== */
+
+updateNavigation();
+updateDigits();
+updateFinalDisplay();
 
 </script>
 
