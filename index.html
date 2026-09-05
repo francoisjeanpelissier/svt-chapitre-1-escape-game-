@@ -3,348 +3,391 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission 3 — Qui a déréglé la Terre ?</title>
+
+<title>Mission 3 — Les changements climatiques</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #102a43;
-        color: #172b4d;
-    }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #102a43;
+    color: #172b4d;
+}
 
-    .game {
-        max-width: 1100px;
-        margin: auto;
-        min-height: 100vh;
-        background: #f4f8fb;
-    }
+.game {
+    max-width: 1100px;
+    margin: auto;
+    min-height: 100vh;
+    background: #f4f8fb;
+}
 
-    header {
-        background: linear-gradient(135deg, #0b7285, #087f5b);
-        color: white;
-        padding: 25px;
-        text-align: center;
-    }
+/* ================= HEADER ================= */
 
-    header h1 {
-        margin: 0 0 8px;
-        font-size: 2rem;
-    }
+header {
+    background: linear-gradient(135deg, #0b7285, #087f5b);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
 
-    header p {
-        margin: 0;
-        font-size: 1.05rem;
-    }
+header h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+}
 
-    .progress-area {
-        background: white;
-        padding: 15px 20px;
-        border-bottom: 1px solid #d9e2ec;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
+header p {
+    margin: 0;
+    font-size: 1.05rem;
+}
 
-    .progress-title {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-        font-weight: bold;
-    }
+/* ================= NAVIGATION ================= */
 
-    .progress-bar {
-        width: 100%;
-        height: 12px;
-        background: #d9e2ec;
-        border-radius: 10px;
-        overflow: hidden;
-    }
+.progress-area {
+    background: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #d9e2ec;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 
-    .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: #20c997;
-        transition: width 0.3s;
-    }
+.progress-title {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #d9e2ec;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #20c997;
+    transition: width 0.3s;
+}
+
+/* Boutons des étapes */
+
+.step-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.step-nav {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #bcccdc;
+    background: white;
+    color: #486581;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.step-nav:hover {
+    border-color: #0b7285;
+    color: #0b7285;
+}
+
+.step-nav.current {
+    background: #0b7285;
+    color: white;
+    border-color: #0b7285;
+}
+
+.step-nav.completed {
+    background: #d3f9d8;
+    color: #087f5b;
+    border-color: #087f5b;
+}
+
+/* ================= CONTENU ================= */
+
+.content {
+    padding: 25px;
+}
+
+.step {
+    display: none;
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.step.active {
+    display: block;
+}
+
+.step-number {
+    display: inline-block;
+    background: #0b7285;
+    color: white;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+h2 {
+    margin-top: 5px;
+    color: #0b7285;
+}
+
+.instruction {
+    background: #e7f5ff;
+    border-left: 5px solid #0b7285;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    line-height: 1.5;
+}
+
+.info {
+    background: #fff9db;
+    border-left: 5px solid #f08c00;
+    padding: 14px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+/* ================= CHOIX ================= */
+
+.choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.choice {
+    border: 3px solid #d9e2ec;
+    border-radius: 15px;
+    padding: 20px;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+    min-height: 110px;
+}
+
+.choice:hover {
+    border-color: #0b7285;
+    transform: translateY(-2px);
+}
+
+.choice.selected {
+    border-color: #20c997;
+    background: #e6fcf5;
+}
+
+.choice input {
+    position: absolute;
+    opacity: 0;
+}
+
+.choice-title {
+    font-size: 1.05rem;
+    font-weight: bold;
+    padding-right: 35px;
+    line-height: 1.4;
+}
+
+.choice-digit {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #102a43;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.choice.selected .choice-digit {
+    background: #087f5b;
+}
+
+/* ================= NAVIGATION BAS ================= */
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 13px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-next {
+    background: #087f5b;
+    color: white;
+}
+
+.btn-next:hover {
+    background: #066c4c;
+}
+
+.btn-prev {
+    background: #d9e2ec;
+    color: #172b4d;
+}
+
+.btn-code {
+    background: #f08c00;
+    color: white;
+}
+
+.btn-code:hover {
+    background: #d97706;
+}
+
+/* ================= CODE ================= */
+
+.code-screen {
+    display: none;
+    background: #102a43;
+    color: white;
+    border-radius: 18px;
+    padding: 30px;
+    text-align: center;
+}
+
+.code-screen.active {
+    display: block;
+}
+
+.code-screen h2 {
+    color: white;
+}
+
+.code-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.code-digit {
+    width: 48px;
+    height: 60px;
+    background: white;
+    color: #102a43;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    font-weight: bold;
+    border: 4px solid transparent;
+}
+
+.code-digit.wrong {
+    background: #ffe3e3;
+    color: #c92a2a;
+    border-color: #c92a2a;
+}
+
+.code-digit.correct {
+    background: #d3f9d8;
+    color: #087f5b;
+    border-color: #087f5b;
+}
+
+.code-input {
+    font-size: 1.5rem;
+    padding: 12px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    letter-spacing: 8px;
+    border-radius: 10px;
+    border: 3px solid #829ab1;
+    margin-bottom: 15px;
+}
+
+.error-message {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #fff5f5;
+    color: #c92a2a;
+    border: 2px solid #c92a2a;
+}
+
+/* ================= VICTOIRE ================= */
+
+.victory {
+    display: none;
+    text-align: center;
+    background: linear-gradient(135deg, #087f5b, #0b7285);
+    color: white;
+    border-radius: 18px;
+    padding: 40px;
+}
+
+.victory.active {
+    display: block;
+}
+
+.victory h2 {
+    color: white;
+    font-size: 2rem;
+}
+
+.restart {
+    background: white;
+    color: #087f5b;
+    margin-top: 20px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 600px) {
 
     .content {
-        padding: 25px;
+        padding: 15px;
     }
 
     .step {
-        display: none;
-        background: white;
-        border-radius: 18px;
-        padding: 30px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        padding: 20px;
     }
 
-    .step.active {
-        display: block;
-    }
-
-    .step-number {
-        display: inline-block;
-        background: #0b7285;
-        color: white;
-        padding: 7px 13px;
-        border-radius: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    h2 {
-        margin-top: 5px;
-        color: #0b7285;
-    }
-
-    .instruction {
-        background: #e7f5ff;
-        border-left: 5px solid #0b7285;
-        padding: 15px;
-        border-radius: 8px;
-        margin: 20px 0;
-        line-height: 1.5;
-    }
-
-    .choices {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .choice {
-        border: 3px solid #d9e2ec;
-        border-radius: 15px;
-        padding: 18px;
-        background: #fff;
-        cursor: pointer;
-        transition: 0.2s;
-        position: relative;
-    }
-
-    .choice:hover {
-        border-color: #0b7285;
-        transform: translateY(-2px);
-    }
-
-    .choice.selected {
-        border-color: #20c997;
-        background: #e6fcf5;
-    }
-
-    .choice input {
-        position: absolute;
-        opacity: 0;
-    }
-
-    .choice-title {
-        font-size: 1.05rem;
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    .choice-digit {
-        position: absolute;
-        top: 10px;
-        right: 12px;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: #102a43;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-
-    .choice.selected .choice-digit {
-        background: #087f5b;
-    }
-
-    .navigation {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 30px;
-    }
-
-    button {
-        border: none;
-        border-radius: 10px;
-        padding: 13px 20px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .btn-next {
-        background: #087f5b;
-        color: white;
-    }
-
-    .btn-next:hover {
-        background: #066c4c;
-    }
-
-    .btn-prev {
-        background: #d9e2ec;
-        color: #172b4d;
-    }
-
-    .btn-code {
-        background: #f08c00;
-        color: white;
-    }
-
-    .btn-code:hover {
-        background: #d97706;
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    .multi-info {
-        margin-top: 12px;
-        color: #52606d;
-        font-size: 0.95rem;
-    }
-
-    /* CODE FINAL */
-
-    .code-screen {
-        display: none;
-        background: #102a43;
-        color: white;
-        border-radius: 18px;
-        padding: 30px;
-        text-align: center;
-    }
-
-    .code-screen.active {
-        display: block;
-    }
-
-    .code-screen h2 {
-        color: white;
-    }
-
-    .code-boxes {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        margin: 25px 0;
+    header h1 {
+        font-size: 1.5rem;
     }
 
     .code-digit {
-        width: 48px;
-        height: 60px;
-        background: white;
-        color: #102a43;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.7rem;
-        font-weight: bold;
-        border: 4px solid transparent;
+        width: 38px;
+        height: 50px;
     }
-
-    .code-digit.wrong {
-        background: #ffe3e3;
-        color: #c92a2a;
-        border-color: #c92a2a;
-    }
-
-    .code-digit.correct {
-        background: #d3f9d8;
-        color: #087f5b;
-        border-color: #087f5b;
-    }
-
-    .code-input {
-        font-size: 1.5rem;
-        padding: 12px;
-        width: 100%;
-        max-width: 500px;
-        text-align: center;
-        letter-spacing: 8px;
-        border-radius: 10px;
-        border: 3px solid #829ab1;
-        margin-bottom: 15px;
-    }
-
-    .message {
-        margin-top: 20px;
-        padding: 15px;
-        border-radius: 10px;
-        display: none;
-    }
-
-    .message.error {
-        display: block;
-        background: #fff5f5;
-        color: #c92a2a;
-        border: 2px solid #c92a2a;
-    }
-
-    .victory {
-        display: none;
-        text-align: center;
-        background: linear-gradient(135deg, #087f5b, #0b7285);
-        color: white;
-        border-radius: 18px;
-        padding: 40px;
-    }
-
-    .victory.active {
-        display: block;
-    }
-
-    .victory h2 {
-        color: white;
-        font-size: 2rem;
-    }
-
-    .restart {
-        background: white;
-        color: #087f5b;
-        margin-top: 20px;
-    }
-
-    .small-note {
-        font-size: 0.9rem;
-        color: #627d98;
-        margin-top: 10px;
-    }
-
-    @media (max-width: 600px) {
-        .content {
-            padding: 15px;
-        }
-
-        .step {
-            padding: 20px;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-        }
-
-        .code-digit {
-            width: 38px;
-            height: 50px;
-        }
-    }
+}
 </style>
 </head>
 
@@ -354,10 +397,11 @@
 
 <header>
     <h1>🌍 MISSION 3 — QUI A DÉRÉGLÉ LA TERRE ?</h1>
-    <p>Résous les défis et récupère les 10 chiffres du code final.</p>
+    <p>Résous les 10 défis pour découvrir le code final.</p>
 </header>
 
 <div class="progress-area">
+
     <div class="progress-title">
         <span>Progression</span>
         <span id="progressText">0 / 10</span>
@@ -366,11 +410,42 @@
     <div class="progress-bar">
         <div class="progress-fill" id="progressFill"></div>
     </div>
+
+    <!--
+        Les 10 étapes restent accessibles à tout moment.
+        Une étape terminée est affichée en vert.
+    -->
+
+    <div class="step-navigation">
+
+        <button class="step-nav current" id="nav1" onclick="showStep(1)">1</button>
+        <button class="step-nav" id="nav2" onclick="showStep(2)">2</button>
+        <button class="step-nav" id="nav3" onclick="showStep(3)">3</button>
+        <button class="step-nav" id="nav4" onclick="showStep(4)">4</button>
+        <button class="step-nav" id="nav5" onclick="showStep(5)">5</button>
+        <button class="step-nav" id="nav6" onclick="showStep(6)">6</button>
+        <button class="step-nav" id="nav7" onclick="showStep(7)">7</button>
+        <button class="step-nav" id="nav8" onclick="showStep(8)">8</button>
+        <button class="step-nav" id="nav9" onclick="showStep(9)">9</button>
+        <button class="step-nav" id="nav10" onclick="showStep(10)">10</button>
+
+        <button class="step-nav"
+                id="navCode"
+                onclick="goToCode()"
+                title="Code final">
+            🔐
+        </button>
+
+    </div>
+
 </div>
 
 <div class="content">
 
-<!-- ===================== ETAPE 1 ===================== -->
+
+<!-- =====================================================
+     ÉTAPE 1
+===================================================== -->
 
 <section class="step active" id="step1">
 
@@ -379,96 +454,116 @@
     <h2>🌦️ Météo ou climat ?</h2>
 
     <div class="instruction">
-        Parmi les propositions suivantes, sélectionne les situations qui correspondent au <strong>climat</strong>.
+        Laquelle de ces situations correspond à une
+        <strong>observation du climat</strong> ?
     </div>
 
-    <div class="choices multi" data-step="1">
+    <div class="choices">
 
         <label class="choice">
-            <input type="checkbox" data-digit="3">
-            <div class="choice-title">🌧️ Il pleut aujourd'hui.</div>
-            <div>Une observation à court terme.</div>
+            <input type="radio"
+                   name="step1"
+                   value="3"
+                   data-digit="3">
+            <div class="choice-title">
+                🌧️ Il pleut aujourd'hui.
+            </div>
             <span class="choice-digit">3</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="7">
-            <div class="choice-title">🌡️ Les températures moyennes augmentent sur plusieurs décennies.</div>
-            <div>Une évolution observée sur une longue durée.</div>
+            <input type="radio"
+                   name="step1"
+                   value="7"
+                   data-digit="7">
+            <div class="choice-title">
+                🌡️ Les températures moyennes augmentent sur plusieurs décennies.
+            </div>
             <span class="choice-digit">7</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="5">
-            <div class="choice-title">❄️ Les hivers sont généralement froids dans une région.</div>
-            <div>Une caractéristique observée sur une longue période.</div>
+            <input type="radio"
+                   name="step1"
+                   value="5"
+                   data-digit="5">
+            <div class="choice-title">
+                ☀️ Il fait 28 °C aujourd'hui.
+            </div>
             <span class="choice-digit">5</span>
-        </label>
-
-        <label class="choice">
-            <input type="checkbox" data-digit="9">
-            <div class="choice-title">☀️ Il fait 28 °C aujourd'hui.</div>
-            <div>Une observation à court terme.</div>
-            <span class="choice-digit">9</span>
         </label>
 
     </div>
 
-    <p class="multi-info">
-        🔎 Plusieurs réponses sont possibles. Le chiffre à récupérer est celui de la proposition qui ne correspond pas au climat.
-    </p>
-
     <div class="navigation">
         <span></span>
-        <button class="btn-next" onclick="validateStep(1)">Valider →</button>
+        <button class="btn-next" onclick="validateStep(1)">
+            Valider →
+        </button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 2 ===================== -->
+<!-- =====================================================
+     ÉTAPE 2
+===================================================== -->
 
 <section class="step" id="step2">
 
     <span class="step-number">ÉTAPE 2 / 10</span>
 
-    <h2>⏳ Une question de durée</h2>
+    <h2>⏳ Le climat dans le temps</h2>
 
     <div class="instruction">
-        Le climat est étudié sur quelle durée ?
+        Quelle proposition correspond à la définition du climat ?
     </div>
 
-    <div class="choices single" data-step="2">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step2" data-digit="4">
-            <div class="choice-title">Quelques heures</div>
+            <input type="radio"
+                   name="step2"
+                   data-digit="4">
+            <div class="choice-title">
+                Le climat décrit uniquement le temps qu'il fait aujourd'hui.
+            </div>
             <span class="choice-digit">4</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step2" data-digit="1">
-            <div class="choice-title">Une longue période</div>
+            <input type="radio"
+                   name="step2"
+                   data-digit="1">
+            <div class="choice-title">
+                Le climat correspond aux conditions atmosphériques observées sur une longue période.
+            </div>
             <span class="choice-digit">1</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step2" data-digit="8">
-            <div class="choice-title">Une seule journée</div>
+            <input type="radio"
+                   name="step2"
+                   data-digit="8">
+            <div class="choice-title">
+                Le climat correspond uniquement aux températures d'une journée.
+            </div>
             <span class="choice-digit">8</span>
         </label>
 
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(2)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(1)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(2)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 3 ===================== -->
+<!-- =====================================================
+     ÉTAPE 3
+===================================================== -->
 
 <section class="step" id="step3">
 
@@ -480,131 +575,174 @@
         Dans quelle grande zone climatique se situe principalement la France ?
     </div>
 
-    <div class="choices single" data-step="3">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step3" data-digit="6">
-            <div class="choice-title">🔥 Zone tropicale</div>
+            <input type="radio"
+                   name="step3"
+                   data-digit="6">
+            <div class="choice-title">
+                🔥 Zone tropicale
+            </div>
             <span class="choice-digit">6</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step3" data-digit="2">
-            <div class="choice-title">🌤️ Zone tempérée</div>
+            <input type="radio"
+                   name="step3"
+                   data-digit="2">
+            <div class="choice-title">
+                🌤️ Zone tempérée
+            </div>
             <span class="choice-digit">2</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step3" data-digit="9">
-            <div class="choice-title">❄️ Zone polaire</div>
+            <input type="radio"
+                   name="step3"
+                   data-digit="9">
+            <div class="choice-title">
+                ❄️ Zone polaire
+            </div>
             <span class="choice-digit">9</span>
         </label>
 
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(3)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(2)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(3)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 4 ===================== -->
+<!-- =====================================================
+     ÉTAPE 4
+===================================================== -->
 
 <section class="step" id="step4">
 
     <span class="step-number">ÉTAPE 4 / 10</span>
 
-    <h2>🌡️ Le changement climatique actuel</h2>
+    <h2>🌡️ Que se passe-t-il aujourd'hui ?</h2>
 
     <div class="instruction">
         Quelle affirmation décrit le mieux le changement climatique actuel ?
     </div>
 
-    <div class="choices single" data-step="4">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step4" data-digit="8">
-            <div class="choice-title">La température moyenne de la Terre augmente.</div>
+            <input type="radio"
+                   name="step4"
+                   data-digit="8">
+            <div class="choice-title">
+                La température moyenne de la Terre augmente.
+            </div>
             <span class="choice-digit">8</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step4" data-digit="3">
-            <div class="choice-title">La température de la Terre reste toujours identique.</div>
+            <input type="radio"
+                   name="step4"
+                   data-digit="3">
+            <div class="choice-title">
+                La température moyenne de la Terre reste toujours identique.
+            </div>
             <span class="choice-digit">3</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step4" data-digit="5">
-            <div class="choice-title">Le climat change uniquement d'un jour à l'autre.</div>
+            <input type="radio"
+                   name="step4"
+                   data-digit="5">
+            <div class="choice-title">
+                Le changement climatique correspond uniquement à la météo d'une journée.
+            </div>
             <span class="choice-digit">5</span>
         </label>
 
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(4)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(3)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(4)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 5 ===================== -->
+<!-- =====================================================
+     ÉTAPE 5
+===================================================== -->
 
 <section class="step" id="step5">
 
     <span class="step-number">ÉTAPE 5 / 10</span>
 
-    <h2>🏭 Les activités humaines</h2>
+    <h2>🏭 Les gaz à effet de serre</h2>
 
     <div class="instruction">
-        Sélectionne les activités humaines qui peuvent contribuer aux émissions de gaz à effet de serre.
+        Quelle activité humaine peut contribuer directement aux
+        <strong>émissions de gaz à effet de serre</strong> ?
     </div>
 
-    <div class="choices multi" data-step="5">
+    <div class="choices">
 
         <label class="choice">
-            <input type="checkbox" data-digit="4">
-            <div class="choice-title">🏭 Activités industrielles</div>
+            <input type="radio"
+                   name="step5"
+                   data-digit="4">
+            <div class="choice-title">
+                🏭 Certaines activités industrielles
+            </div>
             <span class="choice-digit">4</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="6">
-            <div class="choice-title">🚗 Transports</div>
+            <input type="radio"
+                   name="step5"
+                   data-digit="6">
+            <div class="choice-title">
+                🚗 Les transports utilisant des combustibles fossiles
+            </div>
             <span class="choice-digit">6</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="2">
-            <div class="choice-title">⚡ Production et consommation d'énergie</div>
+            <input type="radio"
+                   name="step5"
+                   data-digit="2">
+            <div class="choice-title">
+                ⚡ La production d'énergie à partir de combustibles fossiles
+            </div>
             <span class="choice-digit">2</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="9">
-            <div class="choice-title">🌋 Une éruption volcanique</div>
+            <input type="radio"
+                   name="step5"
+                   data-digit="9">
+            <div class="choice-title">
+                📖 Lire un livre en classe
+            </div>
             <span class="choice-digit">9</span>
         </label>
 
     </div>
 
-    <p class="multi-info">
-        🔎 Plusieurs réponses sont possibles. Le chiffre à récupérer est celui de l'intrus.
-    </p>
-
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(5)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(4)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(5)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 6 ===================== -->
+<!-- =====================================================
+     ÉTAPE 6
+===================================================== -->
 
 <section class="step" id="step6">
 
@@ -613,21 +751,25 @@
     <h2>☀️ L'effet de serre</h2>
 
     <div class="instruction">
-        Quelle affirmation est correcte ?
+        Quelle affirmation est correcte concernant l'effet de serre ?
     </div>
 
-    <div class="choices single" data-step="6">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step6" data-digit="7">
+            <input type="radio"
+                   name="step6"
+                   data-digit="7">
             <div class="choice-title">
-                L'effet de serre naturel est indispensable à la vie sur Terre.
+                L'effet de serre naturel permet à la Terre d'avoir une température compatible avec la vie.
             </div>
             <span class="choice-digit">7</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step6" data-digit="1">
+            <input type="radio"
+                   name="step6"
+                   data-digit="1">
             <div class="choice-title">
                 L'effet de serre n'existe pas naturellement.
             </div>
@@ -635,7 +777,9 @@
         </label>
 
         <label class="choice">
-            <input type="radio" name="step6" data-digit="5">
+            <input type="radio"
+                   name="step6"
+                   data-digit="5">
             <div class="choice-title">
                 L'effet de serre empêche toute chaleur d'atteindre la Terre.
             </div>
@@ -645,75 +789,95 @@
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(6)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(5)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(6)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 7 ===================== -->
+<!-- =====================================================
+     ÉTAPE 7
+===================================================== -->
 
 <section class="step" id="step7">
 
     <span class="step-number">ÉTAPE 7 / 10</span>
 
-    <h2>🔗 Remets les éléments dans le bon ordre</h2>
+    <h2>🔗 Comprendre le mécanisme</h2>
 
     <div class="instruction">
-        Quelle proposition présente correctement l'enchaînement des phénomènes ?
+        Quelle proposition explique correctement le lien entre les
+        activités humaines et le réchauffement climatique ?
     </div>
 
-    <div class="choices single" data-step="7">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step7" data-digit="3">
+            <input type="radio"
+                   name="step7"
+                   data-digit="3">
+
             <div class="choice-title">
                 Activités humaines → émissions de gaz à effet de serre
-                → renforcement de l'effet de serre → réchauffement
-                → conséquences
+                → renforcement de l'effet de serre → réchauffement climatique.
             </div>
+
             <span class="choice-digit">3</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step7" data-digit="8">
+            <input type="radio"
+                   name="step7"
+                   data-digit="8">
+
             <div class="choice-title">
-                Réchauffement → activités humaines → conséquences
-                → gaz à effet de serre
+                Réchauffement climatique → disparition des activités humaines
+                → diminution des gaz à effet de serre.
             </div>
+
             <span class="choice-digit">8</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step7" data-digit="5">
+            <input type="radio"
+                   name="step7"
+                   data-digit="5">
+
             <div class="choice-title">
-                Conséquences → réchauffement → activités humaines
-                → effet de serre
+                Météo quotidienne → activités humaines
+                → disparition de l'effet de serre.
             </div>
+
             <span class="choice-digit">5</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step7" data-digit="1">
+            <input type="radio"
+                   name="step7"
+                   data-digit="1">
+
             <div class="choice-title">
-                Gaz à effet de serre → conséquences → activités humaines
-                → refroidissement
+                Activités humaines → refroidissement de la Terre
+                → diminution de la température moyenne.
             </div>
+
             <span class="choice-digit">1</span>
         </label>
 
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(7)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(6)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(7)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 8 ===================== -->
+<!-- =====================================================
+     ÉTAPE 8
+===================================================== -->
 
 <section class="step" id="step8">
 
@@ -722,104 +886,148 @@
     <h2>🌊 Les conséquences</h2>
 
     <div class="instruction">
-        Sélectionne les conséquences possibles du changement climatique actuel.
+        Laquelle de ces propositions est une conséquence possible
+        du changement climatique actuel ?
     </div>
 
-    <div class="choices multi" data-step="8">
+    <div class="choices">
 
         <label class="choice">
-            <input type="checkbox" data-digit="4">
-            <div class="choice-title">🌡️ Augmentation des températures</div>
+            <input type="radio"
+                   name="step8"
+                   data-digit="4">
+
+            <div class="choice-title">
+                🌡️ Une augmentation des températures moyennes.
+            </div>
+
             <span class="choice-digit">4</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="6">
-            <div class="choice-title">🧊 Fonte de certaines glaces</div>
+            <input type="radio"
+                   name="step8"
+                   data-digit="6">
+
+            <div class="choice-title">
+                🧊 Une fonte de certaines glaces.
+            </div>
+
             <span class="choice-digit">6</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="2">
-            <div class="choice-title">🌊 Élévation du niveau des mers</div>
+            <input type="radio"
+                   name="step8"
+                   data-digit="2">
+
+            <div class="choice-title">
+                🌊 Une élévation du niveau des mers.
+            </div>
+
             <span class="choice-digit">2</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="8">
-            <div class="choice-title">🌳 Perturbation des écosystèmes</div>
+            <input type="radio"
+                   name="step8"
+                   data-digit="8">
+
+            <div class="choice-title">
+                🌳 Des perturbations des écosystèmes.
+            </div>
+
             <span class="choice-digit">8</span>
         </label>
 
         <label class="choice">
-            <input type="checkbox" data-digit="9">
-            <div class="choice-title">🌙 Disparition de la nuit</div>
+            <input type="radio"
+                   name="step8"
+                   data-digit="9">
+
+            <div class="choice-title">
+                🌙 La disparition de la nuit.
+            </div>
+
             <span class="choice-digit">9</span>
         </label>
 
     </div>
 
-    <p class="multi-info">
-        🔎 Quatre réponses sont correctes. Le chiffre à récupérer est celui de l'intrus.
-    </p>
-
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(8)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(7)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(8)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 9 ===================== -->
+<!-- =====================================================
+     ÉTAPE 9
+===================================================== -->
 
 <section class="step" id="step9">
 
     <span class="step-number">ÉTAPE 9 / 10</span>
 
-    <h2>🇫🇷 Et la France dans tout ça ?</h2>
+    <h2>🇫🇷 Et la France ?</h2>
 
     <div class="instruction">
-        Comment peut-on évaluer l'impact de la France dans le changement climatique ?
+        Pour comprendre l'impact de la France sur le changement climatique,
+        quelle approche est pertinente ?
     </div>
 
-    <div class="choices single" data-step="9">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step9" data-digit="6">
+            <input type="radio"
+                   name="step9"
+                   data-digit="6">
+
             <div class="choice-title">
-                En comparant ses émissions avec celles des autres pays et régions du monde.
+                Comparer les émissions de la France avec celles des autres pays du monde.
             </div>
+
             <span class="choice-digit">6</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step9" data-digit="2">
+            <input type="radio"
+                   name="step9"
+                   data-digit="2">
+
             <div class="choice-title">
-                En considérant que la France est seule responsable du changement climatique.
+                Considérer que la France est seule responsable du changement climatique.
             </div>
+
             <span class="choice-digit">2</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step9" data-digit="9">
+            <input type="radio"
+                   name="step9"
+                   data-digit="9">
+
             <div class="choice-title">
-                En regardant uniquement la météo d'une journée en France.
+                Observer uniquement la météo d'une journée en France.
             </div>
+
             <span class="choice-digit">9</span>
         </label>
 
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(9)">← Retour</button>
+        <button class="btn-prev" onclick="showStep(8)">← Étape précédente</button>
         <button class="btn-next" onclick="validateStep(9)">Valider →</button>
     </div>
 
 </section>
 
 
-<!-- ===================== ETAPE 10 ===================== -->
+<!-- =====================================================
+     ÉTAPE 10
+===================================================== -->
 
 <section class="step" id="step10">
 
@@ -828,55 +1036,77 @@
     <h2>🧠 Le dernier défi</h2>
 
     <div class="instruction">
-        Quelle phrase explique le mieux les changements climatiques actuels ?
+        Quelle phrase permet de résumer correctement ce que tu as appris ?
     </div>
 
-    <div class="choices single" data-step="10">
+    <div class="choices">
 
         <label class="choice">
-            <input type="radio" name="step10" data-digit="5">
+            <input type="radio"
+                   name="step10"
+                   data-digit="5">
+
             <div class="choice-title">
-                Les activités humaines augmentent les émissions de gaz à effet de serre,
-                ce qui renforce l'effet de serre et contribue au réchauffement climatique.
+                Les activités humaines augmentent les émissions de gaz
+                à effet de serre, ce qui renforce l'effet de serre
+                et contribue au réchauffement climatique.
             </div>
+
             <span class="choice-digit">5</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step10" data-digit="8">
+            <input type="radio"
+                   name="step10"
+                   data-digit="8">
+
             <div class="choice-title">
-                Le changement climatique actuel est uniquement dû à la météo.
+                Le changement climatique actuel est uniquement dû
+                aux variations de la météo.
             </div>
+
             <span class="choice-digit">8</span>
         </label>
 
         <label class="choice">
-            <input type="radio" name="step10" data-digit="1">
+            <input type="radio"
+                   name="step10"
+                   data-digit="1">
+
             <div class="choice-title">
-                Les températures augmentent sans aucun lien avec les activités humaines.
+                Les températures augmentent sans aucun lien
+                avec les activités humaines.
             </div>
+
             <span class="choice-digit">1</span>
         </label>
 
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="previousStep(10)">← Retour</button>
-        <button class="btn-code" onclick="goToCode()">🔐 Ouvrir le cadenas</button>
+        <button class="btn-prev" onclick="showStep(9)">
+            ← Étape précédente
+        </button>
+
+        <button class="btn-code" onclick="goToCode()">
+            🔐 Ouvrir le cadenas
+        </button>
     </div>
 
 </section>
 
 
-<!-- ===================== CODE ===================== -->
+<!-- =====================================================
+     CODE FINAL
+===================================================== -->
 
 <section class="code-screen" id="codeScreen">
 
     <h2>🔐 LE CADENAS FINAL</h2>
 
     <p>
-        Tu as récupéré un chiffre à chaque étape.
-        Entre maintenant les <strong>10 chiffres</strong> dans l'ordre.
+        Chaque étape t'a permis de récupérer un chiffre.
+        Entre les <strong>10 chiffres</strong> dans l'ordre.
     </p>
 
     <div class="code-boxes" id="codeBoxes"></div>
@@ -896,23 +1126,30 @@
         Vérifier le code
     </button>
 
-    <div id="errorMessage" class="message error">
-        Certains chiffres doivent être vérifiés.
+    <div id="errorMessage" class="error-message">
+        ❌ Le code n'est pas correct.
+        <br><br>
+        Les chiffres rouges correspondent aux positions
+        à vérifier.
         <br>
-        🔴 Retourne aux étapes correspondant aux chiffres rouges
-        et cherche à nouveau.
+        Retourne sur les étapes concernées et cherche à nouveau.
     </div>
 
     <div class="navigation">
-        <button class="btn-prev" onclick="backToLastStep()">
+
+        <button class="btn-prev"
+                onclick="showStep(10)">
             ← Retour aux étapes
         </button>
+
     </div>
 
 </section>
 
 
-<!-- ===================== VICTOIRE ===================== -->
+<!-- =====================================================
+     VICTOIRE
+===================================================== -->
 
 <section class="victory" id="victory">
 
@@ -923,13 +1160,13 @@
     </p>
 
     <p>
-        Tu as réussi à mobiliser tes connaissances sur
-        <strong>la météo, le climat, les zones climatiques,
-        l'effet de serre et les changements climatiques actuels.</strong>
+        Tu as réussi les 10 défis et trouvé le code final.
     </p>
 
     <p>
-        🌍 La Terre peut maintenant être mieux comprise grâce à tes découvertes !
+        🌍 Tu maîtrises maintenant les notions essentielles
+        sur la météo, le climat, les zones climatiques,
+        l'effet de serre et les changements climatiques actuels.
     </p>
 
     <button class="restart" onclick="restartGame()">
@@ -944,66 +1181,76 @@
 
 <script>
 
-const totalSteps = 10;
+/* =====================================================
+   CONFIGURATION
+===================================================== */
 
 /*
-    Un chiffre est récupéré à chaque étape.
+    Un seul chiffre correspond à la bonne réponse
+    pour chaque étape.
 
-    1 : intrus météo/climat = 3
-    2 : climat = longue période = 1
-    3 : France = zone tempérée = 2
-    4 : température moyenne augmente = 8
-    5 : intrus = éruption volcanique = 9
-    6 : effet de serre naturel utile = 7
-    7 : bonne chaîne = 3
-    8 : intrus = disparition de la nuit = 9
-    9 : comparaison avec le reste du monde = 6
-    10 : explication complète = 5
+    1 → climat sur plusieurs décennies = 7
+    2 → climat = longue période = 1
+    3 → France = zone tempérée = 2
+    4 → augmentation de la température moyenne = 8
+    5 → activité humaine liée aux émissions = 4
+    6 → effet de serre naturel indispensable = 7
+    7 → mécanisme correct = 3
+    8 → conséquence possible = 4
+    9 → comparaison avec les autres pays = 6
+    10 → synthèse correcte = 5
 */
 
 const correctCode = [
-    "3",
+    "7",
     "1",
     "2",
     "8",
-    "9",
+    "4",
     "7",
     "3",
-    "9",
+    "4",
     "6",
     "5"
 ];
 
+const totalSteps = 10;
+
 let currentStep = 1;
-let completedSteps = new Array(totalSteps).fill(false);
-let stepDigits = new Array(totalSteps).fill("");
-let firstCodeAttempt = false;
+
+let completedSteps =
+    new Array(totalSteps).fill(false);
+
+let stepDigits =
+    new Array(totalSteps).fill("");
+
+let codeAttempted = false;
 
 
-/* ---------------------------------------
-   AFFICHAGE DES CHOIX
---------------------------------------- */
+/* =====================================================
+   GESTION DES CHOIX
+===================================================== */
 
 document.querySelectorAll(".choice").forEach(choice => {
 
     const input = choice.querySelector("input");
 
-    input.addEventListener("change", () => {
+    input.addEventListener("change", function() {
 
-        if (input.type === "radio") {
+        /*
+            Comme toutes les questions sont maintenant
+            à choix unique, une seule réponse peut être
+            sélectionnée à chaque étape.
+        */
 
-            const parent = choice.parentElement;
+        const parent = choice.parentElement;
 
-            parent.querySelectorAll(".choice").forEach(c => {
-                c.classList.remove("selected");
-            });
+        parent.querySelectorAll(".choice").forEach(c => {
+            c.classList.remove("selected");
+        });
 
+        if (input.checked) {
             choice.classList.add("selected");
-
-        } else {
-
-            choice.classList.toggle("selected");
-
         }
 
     });
@@ -1011,131 +1258,92 @@ document.querySelectorAll(".choice").forEach(choice => {
 });
 
 
-/* ---------------------------------------
+/* =====================================================
    VALIDATION D'UNE ÉTAPE
---------------------------------------- */
+===================================================== */
 
 function validateStep(step) {
 
-    const container = document.querySelector(
-        `.choices[data-step="${step}"]`
-    );
+    const container =
+        document.querySelector(
+            `.choices[data-step="${step}"]`
+        );
 
-    const selected = container.querySelectorAll(
-        "input:checked"
-    );
+    /*
+        Les sections n'ont pas besoin d'un data-step :
+        on récupère directement les choix de l'étape.
+    */
 
-    if (selected.length === 0) {
+    const section =
+        document.getElementById("step" + step);
 
-        alert("Choisis au moins une réponse avant de continuer.");
+    const selected =
+        section.querySelector("input:checked");
+
+    if (!selected) {
+
+        alert(
+            "Choisis une réponse avant de continuer."
+        );
+
         return;
     }
 
-
     /*
-        On récupère les chiffres choisis.
-        Le jeu ne dit jamais si les réponses sont correctes.
+        Le chiffre associé à la réponse choisie
+        est immédiatement mémorisé.
+
+        AUCUN feedback sur la justesse de la réponse.
     */
 
-    const digits = Array.from(selected).map(
-        input => input.dataset.digit
-    );
-
-
-    /*
-        Pour une question à choix unique :
-        le chiffre sélectionné est directement récupéré.
-    */
-
-    if (selected.length === 1) {
-
-        stepDigits[step - 1] = digits[0];
-
-    }
-
-
-    /*
-        Pour une question à plusieurs réponses :
-        on détermine le chiffre à partir de l'intrus.
-
-        Étape 1 :
-        bonnes réponses = climat
-        intrus = météo.
-
-        Étape 5 :
-        trois activités humaines sont pertinentes,
-        l'éruption volcanique est l'intrus.
-
-        Étape 8 :
-        quatre conséquences sont pertinentes,
-        disparition de la nuit est l'intrus.
-    */
-
-    else {
-
-        if (step === 1) {
-
-            const correct = ["7", "5"];
-
-            const allDigits = ["3", "7", "5", "9"];
-
-            const intruder = allDigits.find(
-                digit => !correct.includes(digit)
-            );
-
-            /*
-                Il y a deux intrus dans cette formulation.
-                On utilise le premier intrus prévu par le défi.
-            */
-
-            if (
-                selected.length === 2 &&
-                selected[0].dataset.digit !== "3" &&
-                selected[1].dataset.digit !== "3"
-            ) {
-                stepDigits[0] = "3";
-            } else {
-                stepDigits[0] = "3";
-            }
-
-        }
-
-        if (step === 5) {
-            stepDigits[4] = "9";
-        }
-
-        if (step === 8) {
-            stepDigits[7] = "9";
-        }
-    }
+    stepDigits[step - 1] =
+        selected.dataset.digit;
 
     completedSteps[step - 1] = true;
 
     updateProgress();
+    updateNavigation();
 
     /*
-        On ne donne AUCUN feedback sur la qualité de la réponse.
+        On passe automatiquement à l'étape suivante.
     */
 
     if (step < totalSteps) {
 
-        currentStep = step + 1;
-        showStep(currentStep);
+        showStep(step + 1);
 
+    } else {
+
+        /*
+            Dernière étape :
+            on reste sur l'étape 10.
+            L'élève peut ouvrir le cadenas.
+        */
+
+        updateCodeBoxes();
     }
 
 }
 
 
-/* ---------------------------------------
+/* =====================================================
    AFFICHAGE D'UNE ÉTAPE
---------------------------------------- */
+===================================================== */
 
 function showStep(step) {
 
-    document.querySelectorAll(".step").forEach(
-        section => section.classList.remove("active")
-    );
+    /*
+        L'élève peut maintenant revenir à N'IMPORTE
+        QUELLE étape, même si elle est déjà terminée.
+    */
+
+    if (step < 1 || step > totalSteps) {
+        return;
+    }
+
+    document.querySelectorAll(".step").forEach(section => {
+        section.classList.remove("active");
+    });
 
     document.getElementById("codeScreen")
         .classList.remove("active");
@@ -1143,40 +1351,23 @@ function showStep(step) {
     document.getElementById("victory")
         .classList.remove("active");
 
-    const target = document.getElementById(
-        "step" + step
-    );
-
-    if (target) {
-        target.classList.add("active");
-    }
+    document.getElementById("step" + step)
+        .classList.add("active");
 
     currentStep = step;
 
-    updateProgress();
+    updateNavigation();
 }
 
 
-/* ---------------------------------------
-   RETOUR
---------------------------------------- */
-
-function previousStep(step) {
-
-    if (step > 1) {
-        showStep(step - 1);
-    }
-
-}
-
-
-/* ---------------------------------------
+/* =====================================================
    PROGRESSION
---------------------------------------- */
+===================================================== */
 
 function updateProgress() {
 
-    const completed = completedSteps.filter(Boolean).length;
+    const completed =
+        completedSteps.filter(Boolean).length;
 
     const percentage =
         (completed / totalSteps) * 100;
@@ -1189,18 +1380,44 @@ function updateProgress() {
         "progressText"
     ).textContent =
         completed + " / " + totalSteps;
+}
+
+
+/* =====================================================
+   NAVIGATION DES ÉTAPES
+===================================================== */
+
+function updateNavigation() {
+
+    for (let i = 1; i <= totalSteps; i++) {
+
+        const button =
+            document.getElementById("nav" + i);
+
+        button.classList.remove("current");
+        button.classList.remove("completed");
+
+        if (i === currentStep) {
+            button.classList.add("current");
+        }
+
+        if (completedSteps[i - 1]) {
+            button.classList.add("completed");
+        }
+
+    }
 
 }
 
 
-/* ---------------------------------------
+/* =====================================================
    CODE FINAL
---------------------------------------- */
+===================================================== */
 
 function goToCode() {
 
     /*
-        Vérifie que les 10 étapes ont été faites.
+        Le cadenas n'est accessible qu'après les 10 étapes.
     */
 
     const allCompleted =
@@ -1209,15 +1426,15 @@ function goToCode() {
     if (!allCompleted) {
 
         alert(
-            "Tu dois terminer les 10 étapes avant d'essayer le code."
+            "Termine les 10 étapes avant d'ouvrir le cadenas."
         );
 
         return;
     }
 
-    document.querySelectorAll(".step").forEach(
-        section => section.classList.remove("active")
-    );
+    document.querySelectorAll(".step").forEach(section => {
+        section.classList.remove("active");
+    });
 
     document.getElementById("codeScreen")
         .classList.add("active");
@@ -1227,9 +1444,9 @@ function goToCode() {
 }
 
 
-/* ---------------------------------------
-   AFFICHAGE DES 10 CHIFFRES
---------------------------------------- */
+/* =====================================================
+   AFFICHAGE DES CHIFFRES
+===================================================== */
 
 function updateCodeBoxes() {
 
@@ -1245,15 +1462,20 @@ function updateCodeBoxes() {
 
         box.className = "code-digit";
 
+        /*
+            Le chiffre découvert à chaque étape
+            est affiché dans le cadenas.
+        */
+
         box.textContent =
             stepDigits[i] || "•";
 
         /*
             Après une tentative :
-            seul le chiffre faux devient rouge.
+            seuls les chiffres faux deviennent rouges.
         */
 
-        if (firstCodeAttempt) {
+        if (codeAttempted) {
 
             if (
                 stepDigits[i] &&
@@ -1263,7 +1485,6 @@ function updateCodeBoxes() {
                 box.classList.add("wrong");
 
             }
-
         }
 
         boxes.appendChild(box);
@@ -1272,9 +1493,9 @@ function updateCodeBoxes() {
 }
 
 
-/* ---------------------------------------
+/* =====================================================
    VÉRIFICATION DU CODE
---------------------------------------- */
+===================================================== */
 
 function checkCode() {
 
@@ -1293,27 +1514,21 @@ function checkCode() {
         return;
     }
 
-
-    /*
-        Premier essai :
-        aucun indice avant la vérification.
-    */
-
-    firstCodeAttempt = true;
+    codeAttempted = true;
 
     updateCodeBoxes();
-
 
     let correct = true;
 
     for (let i = 0; i < totalSteps; i++) {
 
-        if (entered[i] !== correctCode[i]) {
+        if (
+            entered[i] !== correctCode[i]
+        ) {
+
             correct = false;
         }
-
     }
-
 
     if (correct) {
 
@@ -1326,26 +1541,24 @@ function checkCode() {
         ).classList.add("active");
 
         document.getElementById(
-            "progressText"
-        ).textContent = "MISSION RÉUSSIE !";
-
-        document.getElementById(
             "progressFill"
         ).style.width = "100%";
+
+        document.getElementById(
+            "progressText"
+        ).textContent =
+            "MISSION RÉUSSIE !";
 
         return;
     }
 
-
     /*
         Le code est faux.
 
-        On ne révèle :
-        - ni le bon code,
-        - ni les bonnes réponses,
-        - ni les bons chiffres.
+        Aucun chiffre correct n'est révélé.
+        Aucun chiffre de la solution n'est donné.
 
-        Seuls les chiffres incorrects deviennent rouges.
+        Seuls les chiffres faux apparaissent en rouge.
     */
 
     document.getElementById(
@@ -1355,30 +1568,23 @@ function checkCode() {
 }
 
 
-/* ---------------------------------------
-   RETOUR AUX ÉTAPES
---------------------------------------- */
-
-function backToLastStep() {
-
-    document.getElementById(
-        "codeScreen"
-    ).classList.remove("active");
-
-    showStep(10);
-
-}
-
-
-/* ---------------------------------------
+/* =====================================================
    RECOMMENCER
---------------------------------------- */
+===================================================== */
 
 function restartGame() {
 
     location.reload();
 
 }
+
+
+/* =====================================================
+   INITIALISATION
+===================================================== */
+
+updateProgress();
+updateNavigation();
 
 </script>
 
